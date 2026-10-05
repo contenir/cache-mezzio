@@ -31,6 +31,21 @@ final class CachePolicyFactoryTest extends TestCase
 
     private string $originalWorkingDirectory;
 
+    public function testAnchorsTheDefaultAdminFileToTheWorkingDirectoryAtBuildTime(): void
+    {
+        mkdir("{$this->temporaryDirectory}/config/autoload", recursive: true);
+        mkdir("{$this->temporaryDirectory}/elsewhere");
+        file_put_contents(
+            "{$this->temporaryDirectory}/" . CachePolicyFactory::DEFAULT_FILE,
+            data: "<?php return ['pagecache' => ['options' => ['cache' => false]]];",
+        );
+        chdir($this->temporaryDirectory);
+        $policy = $this->sitePolicyWithCachingOn();
+        chdir("{$this->temporaryDirectory}/elsewhere");
+
+        self::assertNull($policy->ticketFor($this->request()));
+    }
+
     public function testFallsBackToTheSiteDefaultsWhenTheWorkingDirectoryIsGone(): void
     {
         $vanished = "{$this->temporaryDirectory}/vanished";

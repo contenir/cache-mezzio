@@ -27,6 +27,7 @@ final class SessionInspectorTest extends TestCase
             'no session'                  => [[], false],
             'session object with user'    => [['session' => new FakeSession(['user_id' => 7])], true],
             'session object without user' => [['session' => new FakeSession(['cart' => 1])], false],
+            'session object answers has'  => [['session' => new FakeSession(['user_id' => null])], true],
             'toArray object with user'    => [['session' => new DataSession(['user_id' => 7])], true],
             'array with user'             => [['session' => ['user_id' => 7]], true],
             'array with a null user'      => [['session' => ['user_id' => null]], false],
@@ -41,6 +42,11 @@ final class SessionInspectorTest extends TestCase
         return [
             'no session'                    => [[], [], []],
             'array attribute'               => [['session' => ['cart' => 2]], [], ['cart' => 2]],
+            'every session value'           => [
+                ['session' => ['cart' => 2, 'lang' => 'en']],
+                [],
+                ['cart' => 2, 'lang' => 'en'],
+            ],
             'session object'                => [['session' => new FakeSession(['cart' => 3])], [], ['cart' => 3]],
             'object exposing toArray'       => [['session' => new DataSession(['cart' => 4])], [], ['cart' => 4]],
             'cookie only'                   => [[], ['SID' => 'abc'], ['id' => 'abc']],

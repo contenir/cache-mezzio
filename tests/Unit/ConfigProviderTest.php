@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Contenir\Cache\Mezzio\Tests\Unit;
 
+use Contenir\Cache\Mezzio\ActiveOptions;
 use Contenir\Cache\Mezzio\CachePolicy;
 use Contenir\Cache\Mezzio\CachePolicyFactory;
 use Contenir\Cache\Mezzio\ConfigProvider;
@@ -41,6 +42,20 @@ final class ConfigProviderTest extends TestCase
         );
     }
 
+    public function testExposesTheDependenciesForDirectUse(): void
+    {
+        self::assertSame(
+            [
+                'factories' => [
+                    PageCacheMiddleware::class => PageCacheMiddlewareFactory::class,
+                    CachePolicy::class         => CachePolicyFactory::class,
+                    PageStore::class           => PageStoreFactory::class,
+                ],
+            ],
+            (new ConfigProvider())->getDependencies(),
+        );
+    }
+
     public function testPageCachingIsOffByDefault(): void
     {
         $defaults = (new ConfigProvider())->getPageCacheDefaults();
@@ -59,6 +74,25 @@ final class ConfigProviderTest extends TestCase
                 ],
             ],
             (new ConfigProvider())()['dependencies'],
+        );
+    }
+
+    public function testShipsTheDocumentedPageCacheDefaults(): void
+    {
+        self::assertSame(
+            [
+                'cache'          => null,
+                'ttl'            => 300,
+                'per_item_ttl'   => false,
+                'cache_control'  => 'no-cache',
+                'session_cookie' => 'PHPSESSID',
+                'options'        => ActiveOptions::DEFAULTS,
+                'routes'         => [],
+                'bypass'         => null,
+                'mutators'       => [],
+                'file'           => null,
+            ],
+            (new ConfigProvider())->getPageCacheDefaults(),
         );
     }
 }

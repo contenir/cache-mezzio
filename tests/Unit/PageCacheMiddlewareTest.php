@@ -45,6 +45,19 @@ final class PageCacheMiddlewareTest extends TestCase
         ]);
     }
 
+    public function testAResponseThatIsNotStoredIsABypassRatherThanAMiss(): void
+    {
+        $response = $this->middleware([new AppendingMutator()])->process(
+            $this->request(),
+            new CountingHandler(new HtmlResponse('', 404)),
+        );
+
+        self::assertSame(['', '<!-- stamp:BYPASS -->'], [
+            $response->getHeaderLine('X-PK-Cache'),
+            (string) $response->getBody(),
+        ]);
+    }
+
     public function testAVetoedResponseIsNotStoredAndLosesTheVetoHeader(): void
     {
         $vetoed   = PageCacheMiddleware::veto(new HtmlResponse('<p>Form</p>'));
@@ -130,6 +143,17 @@ final class PageCacheMiddlewareTest extends TestCase
             ],
             [(string) $miss->getBody(), (string) $hit->getBody(), (string) $post->getBody()],
         );
+    }
+
+    public function testReadsTheRequestMethodCaseInsensitively(): void
+    {
+        $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
+        $middleware = $this->middleware();
+
+        $middleware->process($this->request('get'), $handler);
+        $response = $middleware->process($this->request('get'), $handler);
+
+        self::assertSame([1, '<p>Work</p>'], [$handler->calls, (string) $response->getBody()]);
     }
 
     public function testServesARepeatRequestFromTheCache(): void

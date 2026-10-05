@@ -1,0 +1,29 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": ["src"]
+    },
+    "timeout": 10,
+    "threads": "max",
+    "logs": {
+        "text": "infection.log",
+        "summary": "summary.log",
+        "stryker": {
+            "badge": "/^(main|master)$/"
+        }
+    },
+    "mutators": {
+        "@default": true,
+        "ArrayItemRemoval": {
+            "ignoreSourceCodeByRegex": [
+                // ActiveOptions::resolve(): every option reader falls back (`?? false` / `?? null`)
+                // to the value DEFAULTS holds, so dropping DEFAULTS cannot change any result.
+                "\\$options = \\[\\.\\.\\.self::DEFAULTS, .*",
+                // PageStore::save(): isCacheable() refuses any response carrying the veto header,
+                // so it is never present to strip when a page is stored.
+                "PageCacheMiddleware::VETO_HEADER,"
+            ]
+        }
+    },
+    "staticAnalysisTool": "mago"
+}
