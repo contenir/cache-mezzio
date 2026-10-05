@@ -1,13 +1,15 @@
-# contenir/cache-mezzio
+# contenir/contenir-cache-mezzio
 
-[![Continuous Integration](https://github.com/contenir/cache-mezzio/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/contenir/cache-mezzio/actions/workflows/continuous-integration.yml)
-[![codecov](https://codecov.io/gh/contenir/cache-mezzio/graph/badge.svg)](https://codecov.io/gh/contenir/cache-mezzio)
+Formerly `contenir/cache-mezzio`; the old package is abandoned in favour of this one.
 
-Mezzio (PSR-15) adapter for [`contenir/cache`](https://github.com/contenir/cache).
+[![Continuous Integration](https://github.com/contenir/contenir-cache-mezzio/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/contenir/contenir-cache-mezzio/actions/workflows/continuous-integration.yml)
+[![codecov](https://codecov.io/gh/contenir/contenir-cache-mezzio/graph/badge.svg)](https://codecov.io/gh/contenir/contenir-cache-mezzio)
+
+Mezzio (PSR-15) adapter for [`contenir/contenir-cache`](https://github.com/contenir/contenir-cache).
 
 A full-page output cache middleware, controlled by the Contenir admin's
 Page Cache screen. It is the sibling of
-[`contenir/cache-laminas-mvc`](https://github.com/contenir/cache-laminas-mvc):
+[`contenir/contenir-cache-laminas-mvc`](https://github.com/contenir/contenir-cache-laminas-mvc):
 same `pagecache` config key, same `cache_with_*` / `make_id_with_*` options,
 same route overrides, so a site's settings mean the same thing on either
 framework.
@@ -15,7 +17,7 @@ framework.
 ## Requirements
 
 - PHP 8.3, 8.4 or 8.5
-- `contenir/cache` 0.1 or 2.x, `contenir/config` 0.2 or 2.x
+- `contenir/contenir-cache` 2.1+, `contenir/contenir-config` 2.1+
 - `laminas/laminas-diactoros` 3.x, PSR-7, PSR-11, PSR-15, PSR-16 and PSR-20
 - Optional: `laminas/laminas-cache` 3.x or 4.x, for the storage the admin's
   purge buttons understand (see [Storage and purging](docs/storage.md))
@@ -26,7 +28,7 @@ The 0.x releases remain available from the `0.x` branch and `v0.*` tags; see
 ## Install
 
 ```bash
-composer require contenir/cache-mezzio
+composer require contenir/contenir-cache-mezzio
 ```
 
 `laminas/laminas-component-installer` adds `Contenir\Cache\Mezzio\ConfigProvider`
