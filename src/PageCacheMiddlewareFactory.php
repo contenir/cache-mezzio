@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Contenir\Cache\Mezzio;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 
@@ -34,26 +35,6 @@ use function sprintf;
 final readonly class PageCacheMiddlewareFactory
 {
     /**
-     * @throws RuntimeException When the configuration or a service it names is invalid.
-     */
-    public function __invoke(ContainerInterface $container): PageCacheMiddleware
-    {
-        $mutators = array_map(
-            /** @throws RuntimeException */
-            static fn(mixed $serviceName): ResponseMutatorInterface => self::mutator(
-                is_string($serviceName) ? $container->get($serviceName) : $serviceName,
-            ),
-            PageCacheConfig::fromContainer($container)->mutators(),
-        );
-
-        return new PageCacheMiddleware(
-            (new CachePolicyFactory())($container),
-            (new PageStoreFactory())($container),
-            array_values($mutators),
-        );
-    }
-
-    /**
      * @throws RuntimeException
      */
     private static function mutator(mixed $mutator): ResponseMutatorInterface
@@ -67,5 +48,29 @@ final readonly class PageCacheMiddlewareFactory
         }
 
         return $mutator;
+    }
+
+    /**
+     * @throws RuntimeException When the configuration or a service it names is invalid.
+     * @throws ContainerExceptionInterface When a service the configuration names cannot be built.
+     */
+    public function __invoke(ContainerInterface $container): PageCacheMiddleware
+    {
+        $mutators = array_map(
+            /**
+             * @throws RuntimeException
+             * @throws ContainerExceptionInterface
+             */
+            static fn(mixed $serviceName): ResponseMutatorInterface => self::mutator(
+                is_string($serviceName) ? $container->get($serviceName) : $serviceName,
+            ),
+            PageCacheConfig::fromContainer($container)->mutators(),
+        );
+
+        return new PageCacheMiddleware(
+            (new CachePolicyFactory())($container),
+            (new PageStoreFactory())($container),
+            array_values($mutators),
+        );
     }
 }

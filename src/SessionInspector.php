@@ -33,40 +33,11 @@ final readonly class SessionInspector
     ) {}
 
     /**
-     * The session values that identify this visitor's session, or an empty
-     * array when there is no session. A session known only by its cookie is
-     * identified by the cookie's value.
-     *
      * @return array<array-key, mixed>
      */
-    public function values(ServerRequestInterface $request): array
+    private static function cookie(mixed $id): array
     {
-        $data = self::data($request->getAttribute(self::ATTRIBUTE));
-        if ([] !== $data) {
-            return $data;
-        }
-
-        return self::cookie($request->getCookieParams()[$this->cookieName] ?? null);
-    }
-
-    /**
-     * Whether the session holds a logged-in user (`user_id`), the convention
-     * the Contenir CMS uses.
-     */
-    public function hasUser(ServerRequestInterface $request): bool
-    {
-        return self::holdsUser($request->getAttribute(self::ATTRIBUTE));
-    }
-
-    private static function holdsUser(mixed $session): bool
-    {
-        if (is_object($session) && method_exists($session, 'has')) {
-            return true === $session->has('user_id');
-        }
-
-        $data = self::data($session);
-
-        return array_key_exists('user_id', $data) && null !== $data['user_id'];
+        return is_string($id) && '' !== $id ? ['id' => $id] : [];
     }
 
     /**
@@ -81,11 +52,40 @@ final readonly class SessionInspector
         return is_array($session) ? $session : [];
     }
 
+    private static function holdsUser(mixed $session): bool
+    {
+        if (is_object($session) && method_exists($session, 'has')) {
+            return true === $session->has('user_id');
+        }
+
+        $data = self::data($session);
+
+        return array_key_exists('user_id', $data) && null !== $data['user_id'];
+    }
+
     /**
+     * Whether the session holds a logged-in user (`user_id`), the convention
+     * the Contenir CMS uses.
+     */
+    public function hasUser(ServerRequestInterface $request): bool
+    {
+        return self::holdsUser($request->getAttribute(self::ATTRIBUTE));
+    }
+
+    /**
+     * The session values that identify this visitor's session, or an empty
+     * array when there is no session. A session known only by its cookie is
+     * identified by the cookie's value.
+     *
      * @return array<array-key, mixed>
      */
-    private static function cookie(mixed $id): array
+    public function values(ServerRequestInterface $request): array
     {
-        return is_string($id) && '' !== $id ? ['id' => $id] : [];
+        $data = self::data($request->getAttribute(self::ATTRIBUTE));
+        if ([] !== $data) {
+            return $data;
+        }
+
+        return self::cookie($request->getCookieParams()[$this->cookieName] ?? null);
     }
 }

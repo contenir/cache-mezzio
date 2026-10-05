@@ -6,6 +6,7 @@ namespace Contenir\Cache\Mezzio;
 
 use Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator;
 use Laminas\Cache\Storage\StorageInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
@@ -26,23 +27,6 @@ use function sprintf;
  */
 final readonly class PageStoreFactory
 {
-    /**
-     * @throws RuntimeException When `cache` is missing or names an unusable service.
-     */
-    public function __invoke(ContainerInterface $container): PageStore
-    {
-        $config      = PageCacheConfig::fromContainer($container);
-        $serviceName = $config->cacheService();
-        if (null === $serviceName) {
-            throw new RuntimeException(
-                'contenir/cache-mezzio: config[pagecache][cache] must be the service name of a'
-                    . ' Psr\SimpleCache\CacheInterface or a Laminas\Cache\Storage\StorageInterface.',
-            );
-        }
-
-        return self::store($container->get($serviceName), $serviceName, $config);
-    }
-
     /**
      * @throws RuntimeException
      */
@@ -76,5 +60,23 @@ final readonly class PageStoreFactory
             $serviceName,
             get_debug_type($service),
         ));
+    }
+
+    /**
+     * @throws RuntimeException When `cache` is missing or names an unusable service.
+     * @throws ContainerExceptionInterface When a service the configuration names cannot be built.
+     */
+    public function __invoke(ContainerInterface $container): PageStore
+    {
+        $config      = PageCacheConfig::fromContainer($container);
+        $serviceName = $config->cacheService();
+        if (null === $serviceName) {
+            throw new RuntimeException(
+                'contenir/cache-mezzio: config[pagecache][cache] must be the service name of a'
+                    . ' Psr\SimpleCache\CacheInterface or a Laminas\Cache\Storage\StorageInterface.',
+            );
+        }
+
+        return self::store($container->get($serviceName), $serviceName, $config);
     }
 }
