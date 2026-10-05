@@ -1,0 +1,34 @@
+extends = "vendor/php-db/phpdb-qa-tools/mago.toml"
+php-version = "8.3.0"
+
+[source]
+paths = ["src", "test"]
+includes = ["vendor"]
+
+[formatter]
+# Methods stay where the author put them; reading order carries meaning that
+# alphabetical order does not.
+sort-class-methods = false
+
+[linter.rules]
+# Tests follow the house PHPUnit standard: behaviour-named test* methods and
+# self::assert*() calls, which these two rules would rewrite throughout.
+prefer-test-attribute = { enabled = false }
+assertion-style = { enabled = false }
+# Shared test setup traits are named for what they do (MakesServerRequest,
+# UsesTemporaryDirectory), per the house PHPUnit standard, without a Trait suffix.
+trait-name = { enabled = false }
+
+[analyzer]
+excludes = ["test"]
+
+# Exceptions that bubble up transparently from the container and laminas-cache
+# while the factory builds the middleware, not ones this package raises itself.
+unchecked-exceptions = [
+    "Error",
+    "LogicException",
+    "Psr\\Container\\ContainerExceptionInterface",
+    "Psr\\Container\\NotFoundExceptionInterface",
+    "Laminas\\Cache\\Exception\\ExceptionInterface",
+    "Psr\\SimpleCache\\CacheException",
+]

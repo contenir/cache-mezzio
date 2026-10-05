@@ -1,0 +1,89 @@
+name: Code Quality & Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.3']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        coverage: pcov
+        tools: composer:v2, mago
+
+    - name: Validate composer.json
+      run: composer validate --strict
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}
+        restore-keys: |
+          ${{ runner.os }}-php${{ matrix.php-version }}-composer-
+
+    # composer.lock is not committed (this is a library), so resolve fresh.
+    # The ../contenir-* path repositories only exist on a developer machine; on
+    # the runner the vcs repositories supply contenir/cache and contenir/config.
+    - name: Drop the local path repositories
+      run: |
+        composer config --unset repositories.contenir-cache-local
+        composer config --unset repositories.contenir-config-local
+
+    - name: Install dependencies
+      run: composer update --prefer-dist --no-progress --no-interaction
+
+    - name: Check formatting and lint (Mago)
+      run: composer cs-check
+
+    - name: Static analysis (Mago)
+      if: success() || failure()
+      run: composer analyze
+
+    - name: Run unit tests
+      run: composer test:unit
+
+    - name: Run integration tests
+      run: composer test:integration
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        coverage: none
+        tools: composer:v2
+
+    - name: Drop the local path repositories
+      run: |
+        composer config --unset repositories.contenir-cache-local
+        composer config --unset repositories.contenir-config-local
+
+    - name: Install dependencies
+      run: composer update --prefer-dist --no-progress --no-interaction
+
+    - name: Security audit
+      run: composer audit --abandoned=report
