@@ -32,26 +32,6 @@ use const JSON_UNESCAPED_UNICODE;
 final readonly class PageCodec
 {
     /**
-     * @throws JsonException When a header is not valid UTF-8.
-     */
-    public static function encode(StoredResponse $page): string
-    {
-        $body = 1 === preg_match('//u', $page->body)
-            ? ['body' => $page->body]
-            : ['body64' => base64_encode($page->body)];
-
-        return json_encode(
-            [
-                'status'  => $page->status,
-                'headers' => $page->headers,
-                ...$body,
-                'storedAt' => $page->storedAt,
-            ],
-            JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
-        );
-    }
-
-    /**
      * The page in a cache entry, or null when the entry is not one encode()
      * wrote.
      */
@@ -72,6 +52,26 @@ final readonly class PageCodec
             StoredResponse::headerLines($data['headers'] ?? null),
             $body,
             $data['storedAt'],
+        );
+    }
+
+    /**
+     * @throws JsonException When a header is not valid UTF-8.
+     */
+    public static function encode(StoredResponse $page): string
+    {
+        $body = 1 === preg_match('//u', $page->body)
+            ? ['body' => $page->body]
+            : ['body64' => base64_encode($page->body)];
+
+        return json_encode(
+            [
+                'status'  => $page->status,
+                'headers' => $page->headers,
+                ...$body,
+                'storedAt' => $page->storedAt,
+            ],
+            JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
         );
     }
 

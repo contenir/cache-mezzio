@@ -82,37 +82,6 @@ final readonly class ActiveOptions
     }
 
     /**
-     * Whether a request carrying this signal may be cached at all
-     * (`cache_with_{signal}`).
-     */
-    public function allows(string $signal): bool
-    {
-        return filter_var($this->options["cache_with_{$signal}"] ?? false, FILTER_VALIDATE_BOOLEAN);
-    }
-
-    /**
-     * Whether this signal's values become part of the cache key
-     * (`make_id_with_{signal}`).
-     */
-    public function variesBy(string $signal): bool
-    {
-        return filter_var($this->options["make_id_with_{$signal}"] ?? false, FILTER_VALIDATE_BOOLEAN);
-    }
-
-    /**
-     * The `ttl` option, in seconds, when one is set for this path.
-     */
-    public function ttl(): ?int
-    {
-        return self::seconds($this->options['ttl'] ?? null);
-    }
-
-    private static function seconds(mixed $ttl): ?int
-    {
-        return is_numeric($ttl) ? (int) $ttl : null;
-    }
-
-    /**
      * Patterns are admin-entered regexes without delimiters or anchors, wrapped
      * in backticks as the MVC strategy does. A pattern that does not compile is
      * treated as not matching rather than raising a warning on every request.
@@ -135,5 +104,36 @@ final readonly class ActiveOptions
         } finally {
             restore_error_handler();
         }
+    }
+
+    private static function seconds(mixed $ttl): ?int
+    {
+        return is_numeric($ttl) ? (int) $ttl : null;
+    }
+
+    /**
+     * Whether a request carrying this signal may be cached at all
+     * (`cache_with_{signal}`).
+     */
+    public function allows(string $signal): bool
+    {
+        return filter_var($this->options["cache_with_{$signal}"] ?? false, FILTER_VALIDATE_BOOLEAN);
+    }
+
+    /**
+     * The `ttl` option, in seconds, when one is set for this path.
+     */
+    public function ttl(): ?int
+    {
+        return self::seconds($this->options['ttl'] ?? null);
+    }
+
+    /**
+     * Whether this signal's values become part of the cache key
+     * (`make_id_with_{signal}`).
+     */
+    public function variesBy(string $signal): bool
+    {
+        return filter_var($this->options["make_id_with_{$signal}"] ?? false, FILTER_VALIDATE_BOOLEAN);
     }
 }

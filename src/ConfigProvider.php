@@ -17,17 +17,6 @@ final readonly class ConfigProvider
     /**
      * @return array<string, mixed>
      */
-    public function __invoke(): array
-    {
-        return [
-            'dependencies' => $this->getDependencies(),
-            'pagecache'    => $this->getPageCacheDefaults(),
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
     public function getDependencies(): array
     {
         return [
@@ -59,6 +48,17 @@ final readonly class ConfigProvider
             'bypass'         => null,
             'mutators'       => [],
             'file'           => null,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function __invoke(): array
+    {
+        return [
+            'dependencies' => $this->getDependencies(),
+            'pagecache'    => $this->getPageCacheDefaults(),
         ];
     }
 }

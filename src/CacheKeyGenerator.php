@@ -42,6 +42,56 @@ final readonly class CacheKeyGenerator
         private SessionInspector $session,
     ) {}
 
+    /**
+     * Uploaded files are reduced to what describes them, so the key never
+     * depends on stream objects. PSR-7 guarantees the tree holds only uploaded
+     * files and arrays of them.
+     *
+     * @param array<array-key, mixed> $files
+     *
+     * @return array<array-key, mixed>
+     */
+    private static function describeFiles(array $files): array
+    {
+        return array_map(
+            /** @return array<array-key, mixed> */
+            static fn(mixed $file): array => (
+                $file instanceof UploadedFileInterface
+                    ? [$file->getClientFilename(), $file->getClientMediaType(), $file->getSize(), $file->getError()]
+                    : self::describeFiles(is_array($file) ? $file : [])
+            ),
+            $files,
+        );
+    }
+
+    /**
+     * @param array<array-key, mixed> $values
+     *
+     * @return array<array-key, mixed>
+     */
+    private static function normalise(array $values): array
+    {
+        ksort($values);
+
+        return array_map(static fn(mixed $value): mixed => is_array($value)
+            ? self::normalise($value)
+            : $value, $values);
+    }
+
+    /**
+     * @param null|array<array-key, mixed>|object $body
+     *
+     * @return array<array-key, mixed>
+     */
+    private static function parsedBody(array|object|null $body): array
+    {
+        if (is_object($body)) {
+            return get_object_vars($body);
+        }
+
+        return $body ?? [];
+    }
+
     public function generate(ServerRequestInterface $request, ActiveOptions $options): ?string
     {
         $uri   = $request->getUri();
@@ -82,55 +132,5 @@ final readonly class CacheKeyGenerator
             'session' => $this->session->values($request),
             default   => $request->getCookieParams(),
         };
-    }
-
-    /**
-     * @param null|array<array-key, mixed>|object $body
-     *
-     * @return array<array-key, mixed>
-     */
-    private static function parsedBody(array|object|null $body): array
-    {
-        if (is_object($body)) {
-            return get_object_vars($body);
-        }
-
-        return $body ?? [];
-    }
-
-    /**
-     * Uploaded files are reduced to what describes them, so the key never
-     * depends on stream objects. PSR-7 guarantees the tree holds only uploaded
-     * files and arrays of them.
-     *
-     * @param array<array-key, mixed> $files
-     *
-     * @return array<array-key, mixed>
-     */
-    private static function describeFiles(array $files): array
-    {
-        return array_map(
-            /** @return array<array-key, mixed> */
-            static fn(mixed $file): array => (
-                $file instanceof UploadedFileInterface
-                    ? [$file->getClientFilename(), $file->getClientMediaType(), $file->getSize(), $file->getError()]
-                    : self::describeFiles(is_array($file) ? $file : [])
-            ),
-            $files,
-        );
-    }
-
-    /**
-     * @param array<array-key, mixed> $values
-     *
-     * @return array<array-key, mixed>
-     */
-    private static function normalise(array $values): array
-    {
-        ksort($values);
-
-        return array_map(static fn(mixed $value): mixed => is_array($value)
-            ? self::normalise($value)
-            : $value, $values);
     }
 }

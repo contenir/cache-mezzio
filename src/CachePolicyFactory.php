@@ -7,6 +7,7 @@ namespace Contenir\Cache\Mezzio;
 use Closure;
 use Contenir\Cache\CacheControlRepositoryInterface;
 use Contenir\Cache\Mezzio\Repository\LayeredFileRepository;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -38,40 +39,10 @@ final readonly class CachePolicyFactory
     public const string DEFAULT_FILE = 'config/autoload/pagecache.local.php';
 
     /**
-     * @throws RuntimeException When `bypass` is neither callable nor names a callable service.
-     */
-    public function __invoke(ContainerInterface $container): CachePolicy
-    {
-        $config = PageCacheConfig::fromContainer($container);
-
-        return new CachePolicy(
-            self::repository($container, $config),
-            self::bypass($container, $config->value('bypass')),
-            $config->text('session_cookie', 'PHPSESSID'),
-        );
-    }
-
-    private static function repository(
-        ContainerInterface $container,
-        PageCacheConfig $config,
-    ): CacheControlRepositoryInterface {
-        if ($container->has(CacheControlRepositoryInterface::class)) {
-            return $container->get(CacheControlRepositoryInterface::class);
-        }
-
-        $cwd = getcwd();
-
-        return LayeredFileRepository::withDefaults(
-            $config->text('file', (false === $cwd ? '.' : $cwd) . '/' . self::DEFAULT_FILE),
-            $config->value('options'),
-            $config->value('routes'),
-        );
-    }
-
-    /**
      * @return null|Closure(ServerRequestInterface): bool
      *
      * @throws RuntimeException
+     * @throws ContainerExceptionInterface When a service the configuration names cannot be built.
      */
     private static function bypass(ContainerInterface $container, mixed $bypass): ?Closure
     {
@@ -96,5 +67,40 @@ final readonly class CachePolicyFactory
         }
 
         return static fn(ServerRequestInterface $request): bool => true === $callable($request);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface When a service the configuration names cannot be built.
+     */
+    private static function repository(
+        ContainerInterface $container,
+        PageCacheConfig $config,
+    ): CacheControlRepositoryInterface {
+        if ($container->has(CacheControlRepositoryInterface::class)) {
+            return $container->get(CacheControlRepositoryInterface::class);
+        }
+
+        $cwd = getcwd();
+
+        return LayeredFileRepository::withDefaults(
+            $config->text('file', (false === $cwd ? '.' : $cwd) . '/' . self::DEFAULT_FILE),
+            $config->value('options'),
+            $config->value('routes'),
+        );
+    }
+
+    /**
+     * @throws RuntimeException When `bypass` is neither callable nor names a callable service.
+     * @throws ContainerExceptionInterface When a service the configuration names cannot be built.
+     */
+    public function __invoke(ContainerInterface $container): CachePolicy
+    {
+        $config = PageCacheConfig::fromContainer($container);
+
+        return new CachePolicy(
+            self::repository($container, $config),
+            self::bypass($container, $config->value('bypass')),
+            $config->text('session_cookie', 'PHPSESSID'),
+        );
     }
 }

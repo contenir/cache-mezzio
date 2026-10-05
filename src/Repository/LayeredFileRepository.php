@@ -66,6 +66,27 @@ final readonly class LayeredFileRepository implements CacheControlRepositoryInte
         return new self($filePath, new CacheControl($enabled, $options, self::routes($routes)));
     }
 
+    /**
+     * A pattern made only of digits is an integer key in PHP; it is kept, and
+     * the matcher reads it back as a string.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    private static function routes(mixed $routes): array
+    {
+        /** @var array<string, array<string, mixed>> */
+        return array_map(self::stringKeyed(...), array_filter(is_array($routes) ? $routes : [], is_array(...)));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function stringKeyed(mixed $values): array
+    {
+        /** @var array<string, mixed> */
+        return is_array($values) ? array_filter($values, is_string(...), ARRAY_FILTER_USE_KEY) : [];
+    }
+
     #[Override]
     public function get(): CacheControl
     {
@@ -86,26 +107,5 @@ final readonly class LayeredFileRepository implements CacheControlRepositoryInte
     public function save(CacheControl $state): void
     {
         (new FileRepository($this->filePath))->save($state);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private static function stringKeyed(mixed $values): array
-    {
-        /** @var array<string, mixed> */
-        return is_array($values) ? array_filter($values, is_string(...), ARRAY_FILTER_USE_KEY) : [];
-    }
-
-    /**
-     * A pattern made only of digits is an integer key in PHP; it is kept, and
-     * the matcher reads it back as a string.
-     *
-     * @return array<string, array<string, mixed>>
-     */
-    private static function routes(mixed $routes): array
-    {
-        /** @var array<string, array<string, mixed>> */
-        return array_map(self::stringKeyed(...), array_filter(is_array($routes) ? $routes : [], is_array(...)));
     }
 }
