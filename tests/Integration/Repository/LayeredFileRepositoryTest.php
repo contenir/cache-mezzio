@@ -114,6 +114,13 @@ final class LayeredFileRepositoryTest extends TestCase
         self::assertSame(['/shop.*' => ['cache' => false]], (new LayeredFileRepository($this->file))->get()->routes);
     }
 
+    public function testOverridesWithoutAnOptionNameAreDroppedFromARoute(): void
+    {
+        $this->write(['pagecache' => ['routes' => ['/shop.*' => ['cache' => false, 0 => 'stray']]]]);
+
+        self::assertSame(['/shop.*' => ['cache' => false]], (new LayeredFileRepository($this->file))->get()->routes);
+    }
+
     public function testSavedStateIsReadBack(): void
     {
         $repository = new LayeredFileRepository($this->file);

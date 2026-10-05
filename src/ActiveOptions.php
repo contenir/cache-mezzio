@@ -18,9 +18,9 @@ use const FILTER_VALIDATE_BOOLEAN;
 /**
  * The page-cache options in force for one request path.
  *
- * Resolution follows the Laminas MVC CacheStrategy: the admin's options are
- * laid over the built-in defaults, then the overrides of the last route regex
- * that matches the path are laid over those. One deliberate difference: the
+ * Resolution follows the Laminas MVC CacheStrategy: the overrides of the last
+ * route regex that matches the path are laid over the admin's options, and any
+ * option still unset reads as its {@see DEFAULTS} value. One deliberate difference: the
  * admin master switch is final. When it is off nothing is cached, whatever the
  * routes say, which is what the admin screen promises ("bypasses regardless of
  * its per-route configuration"). A route can still turn caching off (or back
@@ -76,7 +76,7 @@ final readonly class ActiveOptions
             $override = $overrides;
         }
 
-        $options = [...self::DEFAULTS, ...$control->options, 'cache' => true, ...$override];
+        $options = [...$control->options, 'cache' => true, ...$override];
 
         return filter_var($options['cache'] ?? false, FILTER_VALIDATE_BOOLEAN) ? new self($options) : null;
     }

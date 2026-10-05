@@ -91,6 +91,14 @@ final class PageStoreTest extends TestCase
         self::assertSame('90', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Age'));
     }
 
+    public function testAHitFetchedAsItIsStoredHasAnAgeOfZero(): void
+    {
+        $store = $this->store();
+        $store->save(new CacheTicket('page'), new HtmlResponse('x'));
+
+        self::assertSame('0', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Age'));
+    }
+
     public function testAHitIsMarkedAsAHit(): void
     {
         $store = $this->store();
@@ -114,6 +122,14 @@ final class PageStoreTest extends TestCase
         $store->save(new CacheTicket('page'), new HtmlResponse('x', 200, ['Cache-Control' => 'public, max-age=30']));
 
         self::assertSame('public, max-age=30', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Cache-Control'));
+    }
+
+    public function testAHitStoredByAClockAheadOfOursHasAnAgeOfZero(): void
+    {
+        $this->store()->save(new CacheTicket('page'), new HtmlResponse('x'));
+        $store = new PageStore($this->cache, new FrozenClock($this->clock->now()->modify('-30 seconds')));
+
+        self::assertSame('0', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Age'));
     }
 
     public function testAHitWithoutCacheControlGetsTheConfiguredOne(): void
@@ -191,6 +207,15 @@ final class PageStoreTest extends TestCase
         );
 
         self::assertSame($expected, $cache->ttls['page']);
+    }
+
+    public function testPerItemTtlsDefaultToFiveMinutes(): void
+    {
+        $cache = new InMemoryCache(honoursTtl: true);
+
+        (new PageStore($cache, $this->clock, perItemTtl: true))->save(new CacheTicket('page'), new HtmlResponse('x'));
+
+        self::assertSame(300, $cache->ttls['page']);
     }
 
     public function testThePageIsStampedWithTheTimeItWasStored(): void

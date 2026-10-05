@@ -144,6 +144,7 @@ composer static-analysis   # mago analyze
 composer test              # unit suite: in-memory caches, clocks, sessions and containers, no I/O
 composer test-integration  # integration suite: real admin files and a laminas-cache Filesystem storage
 composer test-coverage     # both suites, clover.xml for Codecov
+composer mutation-test     # Infection mutation testing over both suites
 ```
 
 ## License

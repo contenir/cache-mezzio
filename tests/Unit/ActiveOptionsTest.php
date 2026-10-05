@@ -10,6 +10,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
+use function error_clear_last;
+use function error_get_last;
+
 #[Group('unit')]
 #[Group('options')]
 final class ActiveOptionsTest extends TestCase
@@ -20,24 +23,30 @@ final class ActiveOptionsTest extends TestCase
     public static function routeProvider(): array
     {
         return [
-            'no routes'                                => [true, [], true],
-            'matching route turns caching off'         => [true, ['/api.*' => ['cache' => false]], false],
-            'route that does not match is ignored'     => [true, ['/admin.*' => ['cache' => false]], true],
-            'last matching route wins'                 => [
+            'no routes'                                 => [true, [], true],
+            'matching route turns caching off'          => [true, ['/api.*' => ['cache' => false]], false],
+            'route that does not match is ignored'      => [true, ['/admin.*' => ['cache' => false]], true],
+            'last matching route wins'                  => [
                 true,
                 ['/api.*' => ['cache' => false], '/api/v1.*' => ['cache' => true]],
                 true,
             ],
-            'later non-matching route does not win'    => [
+            'earlier non-matching route is passed over' => [
+                true,
+                ['/admin.*' => ['cache' => true], '/api.*' => ['cache' => false]],
+                false,
+            ],
+            'later non-matching route does not win'     => [
                 true,
                 ['/api.*' => ['cache' => false], '/admin.*' => ['cache' => true]],
                 false,
             ],
-            'master switch off beats a route'          => [false, ['/api.*' => ['cache' => true]], false],
-            'route without a cache key keeps it on'    => [true, ['/api.*' => ['ttl' => 60]], true],
-            'pattern that does not compile is skipped' => [true, ['/api/(unclosed' => ['cache' => false]], true],
-            'backtick in a pattern is escaped'         => [true, ['/api`.*' => ['cache' => false]], true],
-            'pattern made of digits'                   => [true, [1 => ['cache' => false]], false],
+            'master switch off beats a route'           => [false, ['/api.*' => ['cache' => true]], false],
+            'route without a cache key keeps it on'     => [true, ['/api.*' => ['ttl' => 60]], true],
+            'route with a null cache turns it off'      => [true, ['/api.*' => ['cache' => null]], false],
+            'pattern that does not compile is skipped'  => [true, ['/api/(unclosed' => ['cache' => false]], true],
+            'backtick in a pattern is escaped'          => [true, ['/api`.*' => ['cache' => false]], true],
+            'pattern made of digits'                    => [true, [1 => ['cache' => false]], false],
         ];
     }
 
@@ -78,11 +87,34 @@ final class ActiveOptionsTest extends TestCase
         ];
     }
 
+    public function testABacktickInAPatternMatchesALiteralBacktick(): void
+    {
+        $control = new CacheControl(true, [], ['/a`b' => ['cache' => false]]);
+
+        self::assertNull(ActiveOptions::resolve($control, '/a`b'));
+    }
+
+    public function testAPatternThatDoesNotCompileRaisesNoWarning(): void
+    {
+        error_clear_last();
+
+        ActiveOptions::resolve(new CacheControl(true, [], ['/api/(unclosed' => ['cache' => false]]), '/api/v1');
+
+        self::assertNull(error_get_last());
+    }
+
     public function testARouteOverrideReplacesTheAdminOptionForItsPath(): void
     {
         $control = new CacheControl(true, ['cache_with_query' => false], ['/search' => ['cache_with_query' => true]]);
 
         self::assertTrue(ActiveOptions::resolve($control, '/search')?->allows('query'));
+    }
+
+    public function testASignalWithoutOptionsNeitherAllowsCachingNorVariesTheKey(): void
+    {
+        $active = ActiveOptions::resolve(new CacheControl(true), '/work');
+
+        self::assertSame([false, false], [$active?->allows('unknown'), $active?->variesBy('unknown')]);
     }
 
     public function testCachingIsOffWhenTheAdminMasterSwitchIsOff(): void
