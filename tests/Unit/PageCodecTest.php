@@ -9,6 +9,7 @@ use Contenir\Cache\Mezzio\StoredResponse;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function json_encode;
@@ -57,7 +58,8 @@ final class PageCodecTest extends TestCase
         ];
     }
 
-    public function testAHeaderThatIsNotUtf8CannotBeEncoded(): void
+    #[Test]
+    public function aHeaderThatIsNotUtf8CannotBeEncoded(): void
     {
         $this->expectException(JsonException::class);
         $this->expectExceptionMessage('Malformed UTF-8');
@@ -65,35 +67,40 @@ final class PageCodecTest extends TestCase
         PageCodec::encode(new StoredResponse(200, ['X-Name' => ["\xff"]], 'x', 1));
     }
 
+    #[Test]
     #[DataProvider('pageProvider')]
-    public function testAnEncodedPageDecodesToTheSamePage(StoredResponse $page): void
+    public function anEncodedPageDecodesToTheSamePage(StoredResponse $page): void
     {
-        self::assertEquals($page, PageCodec::decode(PageCodec::encode($page)));
+        static::assertEquals($page, PageCodec::decode(PageCodec::encode($page)));
     }
 
+    #[Test]
     #[DataProvider('foreignValueProvider')]
-    public function testAnEntryItDidNotWriteDecodesToNothing(mixed $value): void
+    public function anEntryItDidNotWriteDecodesToNothing(mixed $value): void
     {
-        self::assertNull(PageCodec::decode($value));
+        static::assertNull(PageCodec::decode($value));
     }
 
-    public function testAnEntryWithoutHeadersDecodesToAPageWithoutHeaders(): void
+    #[Test]
+    public function anEntryWithoutHeadersDecodesToAPageWithoutHeaders(): void
     {
-        self::assertSame(
+        static::assertSame(
             [],
             PageCodec::decode(json_encode(['status' => 200, 'storedAt' => 1, 'body' => 'x']))?->headers,
         );
     }
 
-    public function testAPlainTextBodyIsStoredReadably(): void
+    #[Test]
+    public function aPlainTextBodyIsStoredReadably(): void
     {
-        self::assertStringContainsString(
+        static::assertStringContainsString(
             '"body":"<p>Work</p>"',
             PageCodec::encode(new StoredResponse(200, [], '<p>Work</p>', 1)),
         );
     }
 
-    public function testMalformedHeadersInAnEntryAreDropped(): void
+    #[Test]
+    public function malformedHeadersInAnEntryAreDropped(): void
     {
         $value = json_encode([
             'status'   => 200,
@@ -108,6 +115,6 @@ final class PageCodecTest extends TestCase
             ],
         ]);
 
-        self::assertSame(['X-Ok' => ['yes']], PageCodec::decode($value)?->headers);
+        static::assertSame(['X-Ok' => ['yes']], PageCodec::decode($value)?->headers);
     }
 }

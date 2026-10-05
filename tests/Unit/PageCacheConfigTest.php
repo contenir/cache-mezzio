@@ -8,6 +8,7 @@ use Contenir\Cache\Mezzio\PageCacheConfig;
 use Contenir\Cache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Group('unit')]
@@ -57,12 +58,13 @@ final class PageCacheConfigTest extends TestCase
     /**
      * @param array<string, mixed> $services
      */
+    #[Test]
     #[DataProvider('unconfiguredProvider')]
-    public function testFallsBackToTheDefaultsWhenNothingIsConfigured(array $services): void
+    public function fallsBackToTheDefaultsWhenNothingIsConfigured(array $services): void
     {
         $config = PageCacheConfig::fromContainer(new InMemoryContainer($services));
 
-        self::assertSame(
+        static::assertSame(
             [null, 300, false, 'no-cache', [], null],
             [
                 $config->cacheService(),
@@ -75,7 +77,8 @@ final class PageCacheConfigTest extends TestCase
         );
     }
 
-    public function testReadsTheConfiguredSettings(): void
+    #[Test]
+    public function readsTheConfiguredSettings(): void
     {
         $config = PageCacheConfig::fromContainer(new InMemoryContainer([
             'config' => [
@@ -90,7 +93,7 @@ final class PageCacheConfigTest extends TestCase
             ],
         ]));
 
-        self::assertSame(
+        static::assertSame(
             ['cache.pages', 600, true, 'public, max-age=60', ['app.mutator'], 'app.bypass'],
             [
                 $config->cacheService(),
@@ -103,11 +106,12 @@ final class PageCacheConfigTest extends TestCase
         );
     }
 
+    #[Test]
     #[DataProvider('ttlProvider')]
-    public function testReadsTheTtlAsWholeSeconds(mixed $ttl, int $expected): void
+    public function readsTheTtlAsWholeSeconds(mixed $ttl, int $expected): void
     {
         $config = PageCacheConfig::fromContainer(new InMemoryContainer(['config' => ['pagecache' => ['ttl' => $ttl]]]));
 
-        self::assertSame($expected, $config->ttl());
+        static::assertSame($expected, $config->ttl());
     }
 }

@@ -11,6 +11,7 @@ use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
 use Contenir\Cache\Repository\InMemoryRepository;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -47,42 +48,47 @@ final class CachePolicyTest extends TestCase
         ];
     }
 
-    public function testARequestCarryingASignalItsOptionsRefuseBypassesTheCache(): void
+    #[Test]
+    public function aRequestCarryingASignalItsOptionsRefuseBypassesTheCache(): void
     {
         $policy = new CachePolicy(new InMemoryRepository(CacheControl::enabled()));
 
-        self::assertNull($policy->ticketFor($this->request(query: ['page' => '2'])));
+        static::assertNull($policy->ticketFor($this->request(query: ['page' => '2'])));
     }
 
-    public function testARouteOverrideCanTakeAPathOutOfTheCache(): void
+    #[Test]
+    public function aRouteOverrideCanTakeAPathOutOfTheCache(): void
     {
         $policy = new CachePolicy(new InMemoryRepository(new CacheControl(true, [], ['^/work' => ['cache' => false]])));
 
-        self::assertNull($policy->ticketFor($this->request()));
+        static::assertNull($policy->ticketFor($this->request()));
     }
 
     /**
      * @param array<string, mixed> $attributes
      */
+    #[Test]
     #[DataProvider('authenticatedProvider')]
-    public function testAuthenticatedRequestsBypassTheCache(array $attributes): void
+    public function authenticatedRequestsBypassTheCache(array $attributes): void
     {
         $control = new CacheControl(true, ['cache_with_session' => true]);
 
-        self::assertNull((new CachePolicy(new InMemoryRepository($control)))->ticketFor($this->request(
+        static::assertNull((new CachePolicy(new InMemoryRepository($control)))->ticketFor($this->request(
             attributes: $attributes,
         )));
     }
 
+    #[Test]
     #[DataProvider('methodProvider')]
-    public function testOnlyGetAndHeadRequestsUseTheCache(string $method, bool $expected): void
+    public function onlyGetAndHeadRequestsUseTheCache(string $method, bool $expected): void
     {
         $policy = new CachePolicy(new InMemoryRepository(CacheControl::enabled()));
 
-        self::assertSame($expected, null !== $policy->ticketFor($this->request($method)));
+        static::assertSame($expected, null !== $policy->ticketFor($this->request($method)));
     }
 
-    public function testTheAdminStateIsReadAfreshForEveryRequest(): void
+    #[Test]
+    public function theAdminStateIsReadAfreshForEveryRequest(): void
     {
         $repository = new InMemoryRepository(CacheControl::enabled());
         $policy     = new CachePolicy($repository);
@@ -90,17 +96,18 @@ final class CachePolicyTest extends TestCase
         $before = $policy->ticketFor($this->request());
         $repository->save(CacheControl::disabled());
 
-        self::assertSame([true, false], [null !== $before, null !== $policy->ticketFor($this->request())]);
+        static::assertSame([true, false], [null !== $before, null !== $policy->ticketFor($this->request())]);
     }
 
-    public function testTheBypassCallableCanKeepARequestOutOfTheCache(): void
+    #[Test]
+    public function theBypassCallableCanKeepARequestOutOfTheCache(): void
     {
         $policy = new CachePolicy(
             new InMemoryRepository(CacheControl::enabled()),
             static fn(ServerRequestInterface $request): bool => '' !== $request->getHeaderLine('X-Preview'),
         );
 
-        self::assertSame(
+        static::assertSame(
             [true, false],
             [
                 null !== $policy->ticketFor($this->request()),
@@ -109,12 +116,13 @@ final class CachePolicyTest extends TestCase
         );
     }
 
-    public function testTheSessionCookieNameIsConfigurable(): void
+    #[Test]
+    public function theSessionCookieNameIsConfigurable(): void
     {
         $control = new CacheControl(true, ['cache_with_cookie' => true, 'cache_with_session' => false]);
         $policy  = new CachePolicy(new InMemoryRepository($control), sessionCookie: 'SID');
 
-        self::assertSame(
+        static::assertSame(
             [true, false],
             [
                 null !== $policy->ticketFor($this->request(cookies: ['PHPSESSID' => 'abc'])),
@@ -123,10 +131,11 @@ final class CachePolicyTest extends TestCase
         );
     }
 
-    public function testTheTicketCarriesTheTtlOptionForThePath(): void
+    #[Test]
+    public function theTicketCarriesTheTtlOptionForThePath(): void
     {
         $policy = new CachePolicy(new InMemoryRepository(new CacheControl(true, ['ttl' => 900])));
 
-        self::assertSame(900, $policy->ticketFor($this->request())?->ttl);
+        static::assertSame(900, $policy->ticketFor($this->request())?->ttl);
     }
 }

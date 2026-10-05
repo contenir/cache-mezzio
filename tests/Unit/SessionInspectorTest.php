@@ -10,6 +10,7 @@ use Contenir\Cache\Mezzio\Tests\TestAsset\Session\FakeSession;
 use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Group('unit')]
@@ -60,10 +61,11 @@ final class SessionInspectorTest extends TestCase
     /**
      * @param array<string, mixed> $attributes
      */
+    #[Test]
     #[DataProvider('userProvider')]
-    public function testDetectsALoggedInUser(array $attributes, bool $expected): void
+    public function detectsALoggedInUser(array $attributes, bool $expected): void
     {
-        self::assertSame($expected, (new SessionInspector())->hasUser($this->request(attributes: $attributes)));
+        static::assertSame($expected, (new SessionInspector())->hasUser($this->request(attributes: $attributes)));
     }
 
     /**
@@ -71,14 +73,15 @@ final class SessionInspectorTest extends TestCase
      * @param array<string, string> $cookies
      * @param array<array-key, mixed> $expected
      */
+    #[Test]
     #[DataProvider('valuesProvider')]
-    public function testIdentifiesTheVisitorsSession(array $attributes, array $cookies, array $expected): void
+    public function identifiesTheVisitorsSession(array $attributes, array $cookies, array $expected): void
     {
         $request = $this->request(
             cookies: $cookies,
             attributes: $attributes,
         );
 
-        self::assertSame($expected, (new SessionInspector('SID'))->values($request));
+        static::assertSame($expected, (new SessionInspector('SID'))->values($request));
     }
 }

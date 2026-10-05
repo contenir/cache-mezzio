@@ -14,6 +14,7 @@ use Laminas\Diactoros\UploadedFile;
 use Laminas\Diactoros\Uri;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
@@ -71,34 +72,37 @@ final class CacheKeyGeneratorTest extends TestCase
         ];
     }
 
-    public function testAParsedBodyObjectVariesTheKeyByItsProperties(): void
+    #[Test]
+    public function aParsedBodyObjectVariesTheKeyByItsProperties(): void
     {
         $options   = ['cache_with_post' => true, 'make_id_with_post' => true];
         $object    = new stdClass();
         $object->q = 'a';
 
-        self::assertSame(
+        static::assertSame(
             $this->key($this->request()->withParsedBody(['q' => 'a']), $options),
             $this->key($this->request()->withParsedBody($object), $options),
         );
     }
 
-    public function testAPlainRequestGetsAPrefixedKey(): void
+    #[Test]
+    public function aPlainRequestGetsAPrefixedKey(): void
     {
-        self::assertStringStartsWith(CacheKeyGenerator::PREFIX, (string) $this->key($this->request(), []));
+        static::assertStringStartsWith(CacheKeyGenerator::PREFIX, (string) $this->key($this->request(), []));
     }
 
     /**
      * @param array<string, mixed> $signals
      */
+    #[Test]
     #[DataProvider('refusalProvider')]
-    public function testARequestCarryingASignalIsRefusedUnlessItsCacheWithOptionIsOn(
+    public function aRequestCarryingASignalIsRefusedUnlessItsCacheWithOptionIsOn(
         array $signals,
         string $option,
     ): void {
         $request = $this->signalled($signals);
 
-        self::assertSame(
+        static::assertSame(
             [true, false],
             [null === $this->key($request, []), null === $this->key($request, [$option => true])],
         );
@@ -108,8 +112,9 @@ final class CacheKeyGeneratorTest extends TestCase
      * @param array<string, mixed> $first
      * @param array<string, mixed> $second
      */
+    #[Test]
     #[DataProvider('variationProvider')]
-    public function testMakeIdWithDecidesWhetherASignalVariesTheKey(
+    public function makeIdWithDecidesWhetherASignalVariesTheKey(
         array $first,
         array $second,
         string $signal,
@@ -117,7 +122,7 @@ final class CacheKeyGeneratorTest extends TestCase
         $shared = ["cache_with_{$signal}" => true];
         $varied = [...$shared, "make_id_with_{$signal}" => true];
 
-        self::assertSame(
+        static::assertSame(
             [true, false],
             [
                 $this->key($this->signalled($first), $shared) === $this->key($this->signalled($second), $shared),
@@ -126,39 +131,43 @@ final class CacheKeyGeneratorTest extends TestCase
         );
     }
 
-    public function testNestedUploadedFilesVaryTheKey(): void
+    #[Test]
+    public function nestedUploadedFilesVaryTheKey(): void
     {
         $options = ['cache_with_files' => true, 'make_id_with_files' => true];
 
-        self::assertNotSame(
+        static::assertNotSame(
             $this->key($this->request()->withUploadedFiles(['docs' => [$this->upload('a.pdf')]]), $options),
             $this->key($this->request()->withUploadedFiles(['docs' => [$this->upload('b.pdf')]]), $options),
         );
     }
 
+    #[Test]
     #[DataProvider('uriProvider')]
-    public function testTheHostAndPathAreAlwaysPartOfTheKey(string $other): void
+    public function theHostAndPathAreAlwaysPartOfTheKey(string $other): void
     {
-        self::assertNotSame(
+        static::assertNotSame(
             $this->key($this->request(), []),
             $this->key($this->request()->withUri(new Uri($other)), []),
         );
     }
 
-    public function testTheOrderOfQueryParametersDoesNotChangeTheKey(): void
+    #[Test]
+    public function theOrderOfQueryParametersDoesNotChangeTheKey(): void
     {
         $options = ['cache_with_query' => true, 'make_id_with_query' => true];
         $first   = $this->request(query: ['b' => '2', 'a' => ['y' => '1', 'x' => '0']]);
         $second  = $this->request(query: ['a' => ['x' => '0', 'y' => '1'], 'b' => '2']);
 
-        self::assertSame($this->key($first, $options), $this->key($second, $options));
+        static::assertSame($this->key($first, $options), $this->key($second, $options));
     }
 
-    public function testUploadEntriesThatAreNeitherFilesNorArraysAreIgnored(): void
+    #[Test]
+    public function uploadEntriesThatAreNeitherFilesNorArraysAreIgnored(): void
     {
         $options = ['cache_with_files' => true, 'make_id_with_files' => true];
 
-        self::assertSame(
+        static::assertSame(
             $this->key(new LooseUploadsRequest(['cv' => 'not a file']), $options),
             $this->key(new LooseUploadsRequest(['cv' => 42]), $options),
         );
@@ -170,7 +179,7 @@ final class CacheKeyGeneratorTest extends TestCase
     private function key(ServerRequestInterface $request, array $options): ?string
     {
         $active = ActiveOptions::resolve(new CacheControl(true, $options), $request->getUri()->getPath());
-        self::assertNotNull($active);
+        static::assertNotNull($active);
 
         return (new CacheKeyGenerator(new SessionInspector()))->generate($request, $active);
     }

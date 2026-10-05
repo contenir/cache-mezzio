@@ -9,6 +9,7 @@ use Contenir\Cache\Mezzio\Repository\LayeredFileRepository;
 use Contenir\Cache\Mezzio\Tests\Trait\TemporaryDirectoryTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function file_put_contents;
@@ -41,17 +42,19 @@ final class LayeredFileRepositoryTest extends TestCase
         ];
     }
 
-    public function testAChangeTheAdminSavesIsSeenOnTheNextRead(): void
+    #[Test]
+    public function aChangeTheAdminSavesIsSeenOnTheNextRead(): void
     {
         $repository = new LayeredFileRepository($this->file, new CacheControl(true));
 
         $before = $repository->get()->enabled;
         $this->write(['pagecache' => ['options' => ['cache' => false]]]);
 
-        self::assertSame([true, false], [$before, $repository->get()->enabled]);
+        static::assertSame([true, false], [$before, $repository->get()->enabled]);
     }
 
-    public function testAdminOptionsOverrideTheSiteDefaultsOfTheSameName(): void
+    #[Test]
+    public function adminOptionsOverrideTheSiteDefaultsOfTheSameName(): void
     {
         $this->write(['pagecache' => ['options' => ['cache' => true, 'cache_with_query' => false, 'ttl' => 60]]]);
 
@@ -60,13 +63,14 @@ final class LayeredFileRepositoryTest extends TestCase
             ['cache_with_query' => true, 'cache_with_cookie' => true],
         ));
 
-        self::assertSame(
+        static::assertSame(
             ['cache_with_query' => false, 'cache_with_cookie' => true, 'ttl' => 60],
             $repository->get()->options,
         );
     }
 
-    public function testAdminRoutesReplaceTheSiteRoutes(): void
+    #[Test]
+    public function adminRoutesReplaceTheSiteRoutes(): void
     {
         $this->write(['pagecache' => ['routes' => ['/shop.*' => ['cache' => false]]]]);
 
@@ -75,10 +79,11 @@ final class LayeredFileRepositoryTest extends TestCase
             new CacheControl(true, [], ['/api.*' => ['cache' => false]]),
         );
 
-        self::assertSame(['/shop.*' => ['cache' => false]], $repository->get()->routes);
+        static::assertSame(['/shop.*' => ['cache' => false]], $repository->get()->routes);
     }
 
-    public function testBuildsItsDefaultsFromPagecacheShapedConfig(): void
+    #[Test]
+    public function buildsItsDefaultsFromPagecacheShapedConfig(): void
     {
         $repository = LayeredFileRepository::withDefaults(
             $this->file,
@@ -86,56 +91,62 @@ final class LayeredFileRepositoryTest extends TestCase
             ['/api.*' => ['cache' => false], '/bad' => 'off'],
         );
 
-        self::assertEquals(
+        static::assertEquals(
             new CacheControl(true, ['cache_with_query' => true], ['/api.*' => ['cache' => false]]),
             $repository->get(),
         );
     }
 
-    public function testCachingIsOffWhenNeitherTheSiteNorTheAdminTurnedItOn(): void
+    #[Test]
+    public function cachingIsOffWhenNeitherTheSiteNorTheAdminTurnedItOn(): void
     {
-        self::assertFalse((new LayeredFileRepository($this->file))->get()->enabled);
+        static::assertFalse((new LayeredFileRepository($this->file))->get()->enabled);
     }
 
-    public function testKeepsRoutePatternsMadeOfDigitsUnderTheirOwnKey(): void
+    #[Test]
+    public function keepsRoutePatternsMadeOfDigitsUnderTheirOwnKey(): void
     {
         $this->write(['pagecache' => ['routes' => ['404' => ['cache' => false], '/api' => ['cache' => false]]]]);
 
-        self::assertSame(
+        static::assertSame(
             [404 => ['cache' => false], '/api' => ['cache' => false]],
             (new LayeredFileRepository($this->file))->get()->routes,
         );
     }
 
-    public function testMalformedAdminRoutesAreDropped(): void
+    #[Test]
+    public function malformedAdminRoutesAreDropped(): void
     {
         $this->write(['pagecache' => ['routes' => ['/shop.*' => ['cache' => false], '/bad' => 'off']]]);
 
-        self::assertSame(['/shop.*' => ['cache' => false]], (new LayeredFileRepository($this->file))->get()->routes);
+        static::assertSame(['/shop.*' => ['cache' => false]], (new LayeredFileRepository($this->file))->get()->routes);
     }
 
-    public function testOverridesWithoutAnOptionNameAreDroppedFromARoute(): void
+    #[Test]
+    public function overridesWithoutAnOptionNameAreDroppedFromARoute(): void
     {
         $this->write(['pagecache' => ['routes' => ['/shop.*' => ['cache' => false, 0 => 'stray']]]]);
 
-        self::assertSame(['/shop.*' => ['cache' => false]], (new LayeredFileRepository($this->file))->get()->routes);
+        static::assertSame(['/shop.*' => ['cache' => false]], (new LayeredFileRepository($this->file))->get()->routes);
     }
 
-    public function testSavedStateIsReadBack(): void
+    #[Test]
+    public function savedStateIsReadBack(): void
     {
         $repository = new LayeredFileRepository($this->file);
         $state      = new CacheControl(true, ['cache_with_query' => true], ['/api.*' => ['cache' => false]]);
 
         $repository->save($state);
 
-        self::assertEquals($state, $repository->get());
+        static::assertEquals($state, $repository->get());
     }
 
     /**
      * @param array<string, mixed> $file
      */
+    #[Test]
     #[DataProvider('masterSwitchProvider')]
-    public function testTheMasterSwitchIsInheritedUnlessTheAdminOverrodeIt(
+    public function theMasterSwitchIsInheritedUnlessTheAdminOverrodeIt(
         bool $siteDefault,
         array $file,
         bool $expected,
@@ -144,19 +155,21 @@ final class LayeredFileRepositoryTest extends TestCase
 
         $repository = new LayeredFileRepository($this->file, new CacheControl($siteDefault));
 
-        self::assertSame($expected, $repository->get()->enabled);
+        static::assertSame($expected, $repository->get()->enabled);
     }
 
-    public function testTheSiteDefaultsApplyUntilTheAdminHasWrittenAFile(): void
+    #[Test]
+    public function theSiteDefaultsApplyUntilTheAdminHasWrittenAFile(): void
     {
         $defaults = new CacheControl(true, ['cache_with_query' => true], ['/api.*' => ['cache' => false]]);
 
-        self::assertEquals($defaults, (new LayeredFileRepository($this->file, $defaults))->get());
+        static::assertEquals($defaults, (new LayeredFileRepository($this->file, $defaults))->get());
     }
 
-    public function testUnusableDefaultsMeanCachingIsOff(): void
+    #[Test]
+    public function unusableDefaultsMeanCachingIsOff(): void
     {
-        self::assertEquals(
+        static::assertEquals(
             new CacheControl(false),
             LayeredFileRepository::withDefaults($this->file, 'nonsense', null)->get(),
         );

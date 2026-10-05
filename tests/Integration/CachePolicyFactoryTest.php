@@ -10,6 +10,7 @@ use Contenir\Cache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
 use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
 use Contenir\Cache\Mezzio\Tests\Trait\TemporaryDirectoryTrait;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function chdir;
@@ -31,7 +32,8 @@ final class CachePolicyFactoryTest extends TestCase
 
     private string $originalWorkingDirectory;
 
-    public function testAnchorsTheDefaultAdminFileToTheWorkingDirectoryAtBuildTime(): void
+    #[Test]
+    public function anchorsTheDefaultAdminFileToTheWorkingDirectoryAtBuildTime(): void
     {
         mkdir("{$this->temporaryDirectory}/config/autoload", recursive: true);
         mkdir("{$this->temporaryDirectory}/elsewhere");
@@ -43,20 +45,22 @@ final class CachePolicyFactoryTest extends TestCase
         $policy = $this->sitePolicyWithCachingOn();
         chdir("{$this->temporaryDirectory}/elsewhere");
 
-        self::assertNull($policy->ticketFor($this->request()));
+        static::assertNull($policy->ticketFor($this->request()));
     }
 
-    public function testFallsBackToTheSiteDefaultsWhenTheWorkingDirectoryIsGone(): void
+    #[Test]
+    public function fallsBackToTheSiteDefaultsWhenTheWorkingDirectoryIsGone(): void
     {
         $vanished = "{$this->temporaryDirectory}/vanished";
         mkdir($vanished);
         chdir($vanished);
         rmdir($vanished);
 
-        self::assertNotNull($this->sitePolicyWithCachingOn()->ticketFor($this->request()));
+        static::assertNotNull($this->sitePolicyWithCachingOn()->ticketFor($this->request()));
     }
 
-    public function testReadsTheAdminFileUnderTheWorkingDirectoryByDefault(): void
+    #[Test]
+    public function readsTheAdminFileUnderTheWorkingDirectoryByDefault(): void
     {
         mkdir("{$this->temporaryDirectory}/config/autoload", recursive: true);
         file_put_contents(
@@ -65,7 +69,7 @@ final class CachePolicyFactoryTest extends TestCase
         );
         chdir($this->temporaryDirectory);
 
-        self::assertNull($this->sitePolicyWithCachingOn()->ticketFor($this->request()));
+        static::assertNull($this->sitePolicyWithCachingOn()->ticketFor($this->request()));
     }
 
     protected function setUp(): void

@@ -13,6 +13,7 @@ use Contenir\Cache\Mezzio\PageCacheMiddlewareFactory;
 use Contenir\Cache\Mezzio\PageStore;
 use Contenir\Cache\Mezzio\PageStoreFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function array_keys;
@@ -20,9 +21,10 @@ use function array_keys;
 #[Group('unit')]
 final class ConfigProviderTest extends TestCase
 {
-    public function testDeclaresTheMvcAdaptersOptionKeys(): void
+    #[Test]
+    public function declaresTheMvcAdaptersOptionKeys(): void
     {
-        self::assertSame(
+        static::assertSame(
             [
                 'cache_with_query',
                 'cache_with_post',
@@ -42,9 +44,10 @@ final class ConfigProviderTest extends TestCase
         );
     }
 
-    public function testExposesTheDependenciesForDirectUse(): void
+    #[Test]
+    public function exposesTheDependenciesForDirectUse(): void
     {
-        self::assertSame(
+        static::assertSame(
             [
                 'factories' => [
                     PageCacheMiddleware::class => PageCacheMiddlewareFactory::class,
@@ -56,16 +59,18 @@ final class ConfigProviderTest extends TestCase
         );
     }
 
-    public function testPageCachingIsOffByDefault(): void
+    #[Test]
+    public function pageCachingIsOffByDefault(): void
     {
         $defaults = (new ConfigProvider())->getPageCacheDefaults();
 
-        self::assertSame([null, false], [$defaults['cache'], ((array) $defaults['options'])['cache']]);
+        static::assertSame([null, false], [$defaults['cache'], ((array) $defaults['options'])['cache']]);
     }
 
-    public function testRegistersAFactoryForEachService(): void
+    #[Test]
+    public function registersAFactoryForEachService(): void
     {
-        self::assertSame(
+        static::assertSame(
             [
                 'factories' => [
                     PageCacheMiddleware::class => PageCacheMiddlewareFactory::class,
@@ -77,9 +82,10 @@ final class ConfigProviderTest extends TestCase
         );
     }
 
-    public function testShipsTheDocumentedPageCacheDefaults(): void
+    #[Test]
+    public function shipsTheDocumentedPageCacheDefaults(): void
     {
-        self::assertSame(
+        static::assertSame(
             [
                 'cache'          => null,
                 'ttl'            => 300,

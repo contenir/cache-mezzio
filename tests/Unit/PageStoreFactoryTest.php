@@ -11,6 +11,7 @@ use Contenir\Cache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
 use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
@@ -38,7 +39,8 @@ final class PageStoreFactoryTest extends TestCase
         ];
     }
 
-    public function testHitsGetTheConfiguredCacheControl(): void
+    #[Test]
+    public function hitsGetTheConfiguredCacheControl(): void
     {
         $store = (new PageStoreFactory())(new InMemoryContainer([
             'config'      => ['pagecache' => ['cache' => 'cache.pages', 'cache_control' => 'public, max-age=60']],
@@ -47,10 +49,14 @@ final class PageStoreFactoryTest extends TestCase
 
         $store->save(new CacheTicket('page'), new HtmlResponse('x'));
 
-        self::assertSame('public, max-age=60', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Cache-Control'));
+        static::assertSame(
+            'public, max-age=60',
+            $store->fetch(new CacheTicket('page'))?->getHeaderLine('Cache-Control'),
+        );
     }
 
-    public function testPassesNoPerItemTtlToAPsr16CacheByDefault(): void
+    #[Test]
+    public function passesNoPerItemTtlToAPsr16CacheByDefault(): void
     {
         $cache = new InMemoryCache(honoursTtl: true);
         $store = (new PageStoreFactory())(new InMemoryContainer([
@@ -60,10 +66,11 @@ final class PageStoreFactoryTest extends TestCase
 
         $store->save(new CacheTicket('page'), new HtmlResponse('x'));
 
-        self::assertNull($cache->ttls['page']);
+        static::assertNull($cache->ttls['page']);
     }
 
-    public function testPassesTheTtlToAPsr16CacheWhenPerItemTtlsAreSwitchedOn(): void
+    #[Test]
+    public function passesTheTtlToAPsr16CacheWhenPerItemTtlsAreSwitchedOn(): void
     {
         $cache = new InMemoryCache(honoursTtl: true);
         $store = (new PageStoreFactory())(new InMemoryContainer([
@@ -73,14 +80,15 @@ final class PageStoreFactoryTest extends TestCase
 
         $store->save(new CacheTicket('page'), new HtmlResponse('x'));
 
-        self::assertSame(600, $cache->ttls['page']);
+        static::assertSame(600, $cache->ttls['page']);
     }
 
     /**
      * @param array<string, mixed> $services
      */
+    #[Test]
     #[DataProvider('misconfigurationProvider')]
-    public function testRefusesAMissingOrUnusableCache(array $services, string $message): void
+    public function refusesAMissingOrUnusableCache(array $services, string $message): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage($message);
@@ -88,7 +96,8 @@ final class PageStoreFactoryTest extends TestCase
         (new PageStoreFactory())(new InMemoryContainer($services));
     }
 
-    public function testUsesThePsr16CacheTheConfigNames(): void
+    #[Test]
+    public function usesThePsr16CacheTheConfigNames(): void
     {
         $cache = new InMemoryCache();
         $store = (new PageStoreFactory())(new InMemoryContainer([
@@ -98,6 +107,6 @@ final class PageStoreFactoryTest extends TestCase
 
         $store->save(new CacheTicket('page'), new HtmlResponse('x'));
 
-        self::assertArrayHasKey('page', $cache->items);
+        static::assertArrayHasKey('page', $cache->items);
     }
 }

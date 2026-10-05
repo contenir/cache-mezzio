@@ -13,6 +13,7 @@ use Laminas\Cache\Storage\Adapter\Filesystem;
 use Laminas\Cache\Storage\Plugin\Serializer;
 use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,28 +29,31 @@ final class PageStoreFactoryTest extends TestCase
 
     private Filesystem $storage;
 
-    public function testAPageIsStoredInAndServedFromAFilesystemStorage(): void
+    #[Test]
+    public function aPageIsStoredInAndServedFromAFilesystemStorage(): void
     {
         $store = (new PageStoreFactory())($this->container(['cache' => 'cache.pages', 'per_item_ttl' => true]));
 
         $stored = $store->save(new CacheTicket('page', ttl: 60), new HtmlResponse('<p>Work</p>'));
 
-        self::assertSame(
+        static::assertSame(
             [true, '<p>Work</p>'],
             [$stored, (string) $store->fetch(new CacheTicket('page'))?->getBody()],
         );
     }
 
-    public function testTheFilesystemStorageRefusesAWriteThatCarriesAPerItemTtl(): void
+    #[Test]
+    public function theFilesystemStorageRefusesAWriteThatCarriesAPerItemTtl(): void
     {
-        self::assertFalse((new SimpleCacheDecorator($this->storage))->set('page', 'x', 60));
+        static::assertFalse((new SimpleCacheDecorator($this->storage))->set('page', 'x', 60));
     }
 
-    public function testTheTtlIsAppliedToTheStorageItself(): void
+    #[Test]
+    public function theTtlIsAppliedToTheStorageItself(): void
     {
         (new PageStoreFactory())($this->container(['cache' => 'cache.pages', 'ttl' => 120]));
 
-        self::assertSame(120, $this->storage->getOptions()->getTtl());
+        static::assertSame(120, $this->storage->getOptions()->getTtl());
     }
 
     protected function setUp(): void
