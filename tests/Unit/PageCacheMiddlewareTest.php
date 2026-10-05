@@ -16,6 +16,7 @@ use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
 use Contenir\Cache\Repository\InMemoryRepository;
 use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function array_values;
@@ -30,7 +31,8 @@ final class PageCacheMiddlewareTest extends TestCase
 
     private InMemoryRepository $repository;
 
-    public function testAnswersAHeadRequestFromTheStoredPageWithoutItsBody(): void
+    #[Test]
+    public function answersAHeadRequestFromTheStoredPageWithoutItsBody(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = $this->middleware();
@@ -38,35 +40,38 @@ final class PageCacheMiddlewareTest extends TestCase
         $middleware->process($this->request(), $handler);
         $response = $middleware->process($this->request('HEAD'), $handler);
 
-        self::assertSame([1, '', 'HIT'], [
+        static::assertSame([1, '', 'HIT'], [
             $handler->calls,
             (string) $response->getBody(),
             $response->getHeaderLine('X-PK-Cache'),
         ]);
     }
 
-    public function testAResponseThatIsNotStoredIsABypassRatherThanAMiss(): void
+    #[Test]
+    public function aResponseThatIsNotStoredIsABypassRatherThanAMiss(): void
     {
         $response = $this->middleware([new AppendingMutator()])->process(
             $this->request(),
             new CountingHandler(new HtmlResponse('', 404)),
         );
 
-        self::assertSame(['', '<!-- stamp:BYPASS -->'], [
+        static::assertSame(['', '<!-- stamp:BYPASS -->'], [
             $response->getHeaderLine('X-PK-Cache'),
             (string) $response->getBody(),
         ]);
     }
 
-    public function testAVetoedResponseIsNotStoredAndLosesTheVetoHeader(): void
+    #[Test]
+    public function aVetoedResponseIsNotStoredAndLosesTheVetoHeader(): void
     {
         $vetoed   = PageCacheMiddleware::veto(new HtmlResponse('<p>Form</p>'));
         $response = $this->middleware()->process($this->request(), new CountingHandler($vetoed));
 
-        self::assertSame([[], false], [$this->cache->items, $response->hasHeader('X-Page-Cache')]);
+        static::assertSame([[], false], [$this->cache->items, $response->hasHeader('X-Page-Cache')]);
     }
 
-    public function testBypassesTheCacheEntirelyWhenTheAdminSwitchesItOff(): void
+    #[Test]
+    public function bypassesTheCacheEntirelyWhenTheAdminSwitchesItOff(): void
     {
         $this->repository->save(CacheControl::disabled());
         $handler    = new CountingHandler(new HtmlResponse('x'));
@@ -75,58 +80,65 @@ final class PageCacheMiddlewareTest extends TestCase
         $middleware->process($this->request(), $handler);
         $response = $middleware->process($this->request(), $handler);
 
-        self::assertSame([2, [], ''], [$handler->calls, $this->cache->items, $response->getHeaderLine('X-PK-Cache')]);
+        static::assertSame([2, [], ''], [$handler->calls, $this->cache->items, $response->getHeaderLine('X-PK-Cache')]);
     }
 
-    public function testDoesNotCacheAnErrorResponse(): void
+    #[Test]
+    public function doesNotCacheAnErrorResponse(): void
     {
         $this->middleware()->process($this->request(), new CountingHandler(new HtmlResponse('', 404)));
 
-        self::assertSame([], $this->cache->items);
+        static::assertSame([], $this->cache->items);
     }
 
-    public function testDoesNotCacheAPost(): void
+    #[Test]
+    public function doesNotCacheAPost(): void
     {
         $this->middleware()->process($this->request('POST'), new CountingHandler(new HtmlResponse('ok')));
 
-        self::assertSame([], $this->cache->items);
+        static::assertSame([], $this->cache->items);
     }
 
-    public function testDoesNotStoreTheEmptyBodyOfAHeadMiss(): void
+    #[Test]
+    public function doesNotStoreTheEmptyBodyOfAHeadMiss(): void
     {
         $this->middleware()->process($this->request('HEAD'), new CountingHandler(new HtmlResponse('')));
 
-        self::assertSame([], $this->cache->items);
+        static::assertSame([], $this->cache->items);
     }
 
-    public function testMarksAStoredResponseAsAMiss(): void
+    #[Test]
+    public function marksAStoredResponseAsAMiss(): void
     {
         $response = $this->middleware()->process($this->request(), new CountingHandler(new HtmlResponse('x')));
 
-        self::assertSame('MISS', $response->getHeaderLine('X-PK-Cache'));
+        static::assertSame('MISS', $response->getHeaderLine('X-PK-Cache'));
     }
 
-    public function testMutationsAreAppliedAfterStorageSoTheyAreNeverCached(): void
+    #[Test]
+    public function mutationsAreAppliedAfterStorageSoTheyAreNeverCached(): void
     {
         $this->middleware([new AppendingMutator()])->process(
             $this->request(),
             new CountingHandler(new HtmlResponse('<p>Work</p>')),
         );
 
-        self::assertStringNotContainsString('stamp', (string) array_values($this->cache->items)[0]);
+        static::assertStringNotContainsString('stamp', (string) array_values($this->cache->items)[0]);
     }
 
-    public function testMutatorsRunInTheOrderGiven(): void
+    #[Test]
+    public function mutatorsRunInTheOrderGiven(): void
     {
         $response = $this->middleware([new AppendingMutator('first'), new AppendingMutator('second')])->process(
             $this->request('POST'),
             new CountingHandler(new HtmlResponse('')),
         );
 
-        self::assertSame('<!-- first:BYPASS --><!-- second:BYPASS -->', (string) $response->getBody());
+        static::assertSame('<!-- first:BYPASS --><!-- second:BYPASS -->', (string) $response->getBody());
     }
 
-    public function testMutatorsSeeHowTheCacheDealtWithEachRequest(): void
+    #[Test]
+    public function mutatorsSeeHowTheCacheDealtWithEachRequest(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = $this->middleware([new AppendingMutator()]);
@@ -135,7 +147,7 @@ final class PageCacheMiddlewareTest extends TestCase
         $hit  = $middleware->process($this->request(), $handler);
         $post = $middleware->process($this->request('POST'), $handler);
 
-        self::assertSame(
+        static::assertSame(
             [
                 '<p>Work</p><!-- stamp:MISS -->',
                 '<p>Work</p><!-- stamp:HIT -->',
@@ -145,7 +157,8 @@ final class PageCacheMiddlewareTest extends TestCase
         );
     }
 
-    public function testReadsTheRequestMethodCaseInsensitively(): void
+    #[Test]
+    public function readsTheRequestMethodCaseInsensitively(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = $this->middleware();
@@ -153,10 +166,11 @@ final class PageCacheMiddlewareTest extends TestCase
         $middleware->process($this->request('get'), $handler);
         $response = $middleware->process($this->request('get'), $handler);
 
-        self::assertSame([1, '<p>Work</p>'], [$handler->calls, (string) $response->getBody()]);
+        static::assertSame([1, '<p>Work</p>'], [$handler->calls, (string) $response->getBody()]);
     }
 
-    public function testServesARepeatRequestFromTheCache(): void
+    #[Test]
+    public function servesARepeatRequestFromTheCache(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = $this->middleware();
@@ -164,14 +178,15 @@ final class PageCacheMiddlewareTest extends TestCase
         $middleware->process($this->request(), $handler);
         $response = $middleware->process($this->request(), $handler);
 
-        self::assertSame([1, '<p>Work</p>', 'HIT'], [
+        static::assertSame([1, '<p>Work</p>', 'HIT'], [
             $handler->calls,
             (string) $response->getBody(),
             $response->getHeaderLine('X-PK-Cache'),
         ]);
     }
 
-    public function testStopsServingStoredPagesAsSoonAsTheAdminSwitchesCachingOff(): void
+    #[Test]
+    public function stopsServingStoredPagesAsSoonAsTheAdminSwitchesCachingOff(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('x'));
         $middleware = $this->middleware();
@@ -180,7 +195,7 @@ final class PageCacheMiddlewareTest extends TestCase
         $this->repository->save(CacheControl::disabled());
         $middleware->process($this->request(), $handler);
 
-        self::assertSame(2, $handler->calls);
+        static::assertSame(2, $handler->calls);
     }
 
     protected function setUp(): void

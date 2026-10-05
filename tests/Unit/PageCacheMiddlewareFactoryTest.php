@@ -15,6 +15,7 @@ use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
 use Contenir\Cache\Repository\InMemoryRepository;
 use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
@@ -25,7 +26,8 @@ final class PageCacheMiddlewareFactoryTest extends TestCase
 {
     use ServerRequestTrait;
 
-    public function testAppliesTheConfiguredMutatorsInOrder(): void
+    #[Test]
+    public function appliesTheConfiguredMutatorsInOrder(): void
     {
         $middleware = (new PageCacheMiddlewareFactory())($this->container(
             ['mutators' => ['app.first', 'app.second']],
@@ -34,10 +36,11 @@ final class PageCacheMiddlewareFactoryTest extends TestCase
 
         $response = $middleware->process($this->request('POST'), new CountingHandler(new HtmlResponse('')));
 
-        self::assertSame('<!-- first:BYPASS --><!-- second:BYPASS -->', (string) $response->getBody());
+        static::assertSame('<!-- first:BYPASS --><!-- second:BYPASS -->', (string) $response->getBody());
     }
 
-    public function testBuildsAMiddlewareThatCachesPages(): void
+    #[Test]
+    public function buildsAMiddlewareThatCachesPages(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = (new PageCacheMiddlewareFactory())($this->container());
@@ -45,10 +48,11 @@ final class PageCacheMiddlewareFactoryTest extends TestCase
         $middleware->process($this->request(), $handler);
         $middleware->process($this->request(), $handler);
 
-        self::assertSame(1, $handler->calls);
+        static::assertSame(1, $handler->calls);
     }
 
-    public function testRefusesAMutatorEntryThatIsNotAServiceName(): void
+    #[Test]
+    public function refusesAMutatorEntryThatIsNotAServiceName(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('got int');
@@ -56,7 +60,8 @@ final class PageCacheMiddlewareFactoryTest extends TestCase
         (new PageCacheMiddlewareFactory())($this->container(['mutators' => [42]]));
     }
 
-    public function testRefusesAMutatorThatDoesNotImplementTheInterface(): void
+    #[Test]
+    public function refusesAMutatorThatDoesNotImplementTheInterface(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('page cache mutators must implement');

@@ -8,6 +8,7 @@ use Contenir\Cache\CacheControl;
 use Contenir\Cache\Mezzio\ActiveOptions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function error_clear_last;
@@ -87,51 +88,58 @@ final class ActiveOptionsTest extends TestCase
         ];
     }
 
-    public function testABacktickInAPatternMatchesALiteralBacktick(): void
+    #[Test]
+    public function aBacktickInAPatternMatchesALiteralBacktick(): void
     {
         $control = new CacheControl(true, [], ['/a`b' => ['cache' => false]]);
 
-        self::assertNull(ActiveOptions::resolve($control, '/a`b'));
+        static::assertNull(ActiveOptions::resolve($control, '/a`b'));
     }
 
-    public function testAPatternThatDoesNotCompileRaisesNoWarning(): void
+    #[Test]
+    public function aPatternThatDoesNotCompileRaisesNoWarning(): void
     {
         error_clear_last();
 
         ActiveOptions::resolve(new CacheControl(true, [], ['/api/(unclosed' => ['cache' => false]]), '/api/v1');
 
-        self::assertNull(error_get_last());
+        static::assertNull(error_get_last());
     }
 
-    public function testARouteOverrideReplacesTheAdminOptionForItsPath(): void
+    #[Test]
+    public function aRouteOverrideReplacesTheAdminOptionForItsPath(): void
     {
         $control = new CacheControl(true, ['cache_with_query' => false], ['/search' => ['cache_with_query' => true]]);
 
-        self::assertTrue(ActiveOptions::resolve($control, '/search')?->allows('query'));
+        static::assertTrue(ActiveOptions::resolve($control, '/search')?->allows('query'));
     }
 
-    public function testASignalWithoutOptionsNeitherAllowsCachingNorVariesTheKey(): void
+    #[Test]
+    public function aSignalWithoutOptionsNeitherAllowsCachingNorVariesTheKey(): void
     {
         $active = ActiveOptions::resolve(new CacheControl(true), '/work');
 
-        self::assertSame([false, false], [$active?->allows('unknown'), $active?->variesBy('unknown')]);
+        static::assertSame([false, false], [$active?->allows('unknown'), $active?->variesBy('unknown')]);
     }
 
-    public function testCachingIsOffWhenTheAdminMasterSwitchIsOff(): void
+    #[Test]
+    public function cachingIsOffWhenTheAdminMasterSwitchIsOff(): void
     {
-        self::assertNull(ActiveOptions::resolve(new CacheControl(false), '/work'));
+        static::assertNull(ActiveOptions::resolve(new CacheControl(false), '/work'));
     }
 
-    public function testCachingIsOnWhenTheAdminMasterSwitchIsOn(): void
+    #[Test]
+    public function cachingIsOnWhenTheAdminMasterSwitchIsOn(): void
     {
-        self::assertInstanceOf(ActiveOptions::class, ActiveOptions::resolve(new CacheControl(true), '/work'));
+        static::assertInstanceOf(ActiveOptions::class, ActiveOptions::resolve(new CacheControl(true), '/work'));
     }
 
     /**
      * @param array<string, mixed> $options
      */
+    #[Test]
     #[DataProvider('signalProvider')]
-    public function testOptionsSayWhichSignalsAllowCachingAndVaryTheKey(
+    public function optionsSayWhichSignalsAllowCachingAndVaryTheKey(
         array $options,
         string $signal,
         bool $allows,
@@ -139,23 +147,25 @@ final class ActiveOptionsTest extends TestCase
     ): void {
         $active = ActiveOptions::resolve(new CacheControl(true, $options), '/work');
 
-        self::assertSame([$allows, $variesBy], [$active?->allows($signal), $active?->variesBy($signal)]);
+        static::assertSame([$allows, $variesBy], [$active?->allows($signal), $active?->variesBy($signal)]);
     }
 
     /**
      * @param array<string, array<string, mixed>> $routes
      */
+    #[Test]
     #[DataProvider('routeProvider')]
-    public function testRouteOverridesDecideWhetherAPathIsCached(bool $enabled, array $routes, bool $expected): void
+    public function routeOverridesDecideWhetherAPathIsCached(bool $enabled, array $routes, bool $expected): void
     {
         $options = ActiveOptions::resolve(new CacheControl($enabled, [], $routes), '/api/v1/items');
 
-        self::assertSame($expected, null !== $options);
+        static::assertSame($expected, null !== $options);
     }
 
+    #[Test]
     #[DataProvider('ttlProvider')]
-    public function testTtlIsReadFromTheOptions(mixed $ttl, ?int $expected): void
+    public function ttlIsReadFromTheOptions(mixed $ttl, ?int $expected): void
     {
-        self::assertSame($expected, ActiveOptions::resolve(new CacheControl(true, ['ttl' => $ttl]), '/work')?->ttl());
+        static::assertSame($expected, ActiveOptions::resolve(new CacheControl(true, ['ttl' => $ttl]), '/work')?->ttl());
     }
 }

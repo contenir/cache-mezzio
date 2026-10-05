@@ -7,17 +7,19 @@ namespace Contenir\Cache\Mezzio\Tests\Unit;
 use Contenir\Cache\Mezzio\SystemClock;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Group('unit')]
 final class SystemClockTest extends TestCase
 {
-    public function testTellsTheCurrentTime(): void
+    #[Test]
+    public function tellsTheCurrentTime(): void
     {
         $before = new DateTimeImmutable();
         $now    = (new SystemClock())->now();
         $after  = new DateTimeImmutable();
 
-        self::assertTrue($before <= $now && $now <= $after);
+        static::assertTrue($before <= $now && $now <= $after);
     }
 }

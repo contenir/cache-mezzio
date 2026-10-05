@@ -16,6 +16,7 @@ use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
@@ -69,135 +70,158 @@ final class PageStoreTest extends TestCase
         ];
     }
 
-    public function testAFailingCacheBackendIsAMiss(): void
+    #[Test]
+    public function aFailingCacheBackendIsAMiss(): void
     {
-        self::assertNull((new PageStore(new FailingCache(), $this->clock))->fetch(new CacheTicket('page')));
+        static::assertNull((new PageStore(new FailingCache(), $this->clock))->fetch(new CacheTicket('page')));
     }
 
-    public function testAFailingCacheBackendStoresNothing(): void
+    #[Test]
+    public function aFailingCacheBackendStoresNothing(): void
     {
-        self::assertFalse((new PageStore(new FailingCache(), $this->clock))->save(
+        static::assertFalse((new PageStore(new FailingCache(), $this->clock))->save(
             new CacheTicket('page'),
             new HtmlResponse('x'),
         ));
     }
 
-    public function testAHitCarriesItsAgeInSeconds(): void
+    #[Test]
+    public function aHitCarriesItsAgeInSeconds(): void
     {
         $store = $this->store();
         $store->save(new CacheTicket('page'), new HtmlResponse('x'));
         $this->clock->advance(90);
 
-        self::assertSame('90', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Age'));
+        static::assertSame('90', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Age'));
     }
 
-    public function testAHitFetchedAsItIsStoredHasAnAgeOfZero(): void
+    #[Test]
+    public function aHitFetchedAsItIsStoredHasAnAgeOfZero(): void
     {
         $store = $this->store();
         $store->save(new CacheTicket('page'), new HtmlResponse('x'));
 
-        self::assertSame('0', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Age'));
+        static::assertSame('0', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Age'));
     }
 
-    public function testAHitIsMarkedAsAHit(): void
+    #[Test]
+    public function aHitIsMarkedAsAHit(): void
     {
         $store = $this->store();
         $store->save(new CacheTicket('page'), new HtmlResponse('x'));
 
-        self::assertSame('HIT', $store->fetch(new CacheTicket('page'))?->getHeaderLine('X-PK-Cache'));
+        static::assertSame('HIT', $store->fetch(new CacheTicket('page'))?->getHeaderLine('X-PK-Cache'));
     }
 
-    public function testAHitKeepsAnAgeHeaderThePageAlreadyHad(): void
+    #[Test]
+    public function aHitKeepsAnAgeHeaderThePageAlreadyHad(): void
     {
         $store = $this->store();
         $store->save(new CacheTicket('page'), new HtmlResponse('x', 200, ['Age' => '5']));
         $this->clock->advance(90);
 
-        self::assertSame('5', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Age'));
+        static::assertSame('5', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Age'));
     }
 
-    public function testAHitKeepsTheCacheControlThePageWasStoredWith(): void
+    #[Test]
+    public function aHitKeepsTheCacheControlThePageWasStoredWith(): void
     {
         $store = $this->store();
         $store->save(new CacheTicket('page'), new HtmlResponse('x', 200, ['Cache-Control' => 'public, max-age=30']));
 
-        self::assertSame('public, max-age=30', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Cache-Control'));
+        static::assertSame(
+            'public, max-age=30',
+            $store->fetch(new CacheTicket('page'))?->getHeaderLine('Cache-Control'),
+        );
     }
 
-    public function testAHitStoredByAClockAheadOfOursHasAnAgeOfZero(): void
+    #[Test]
+    public function aHitStoredByAClockAheadOfOursHasAnAgeOfZero(): void
     {
         $this->store()->save(new CacheTicket('page'), new HtmlResponse('x'));
         $store = new PageStore($this->cache, new FrozenClock($this->clock->now()->modify('-30 seconds')));
 
-        self::assertSame('0', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Age'));
+        static::assertSame('0', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Age'));
     }
 
-    public function testAHitWithoutCacheControlGetsTheConfiguredOne(): void
+    #[Test]
+    public function aHitWithoutCacheControlGetsTheConfiguredOne(): void
     {
         $store = new PageStore($this->cache, $this->clock, cacheControl: 'public, max-age=60');
         $store->save(new CacheTicket('page'), new HtmlResponse('x'));
 
-        self::assertSame('public, max-age=60', $store->fetch(new CacheTicket('page'))?->getHeaderLine('Cache-Control'));
+        static::assertSame(
+            'public, max-age=60',
+            $store->fetch(new CacheTicket('page'))?->getHeaderLine('Cache-Control'),
+        );
     }
 
-    public function testAnEntryThePageCacheDidNotWriteIsAMiss(): void
+    #[Test]
+    public function anEntryThePageCacheDidNotWriteIsAMiss(): void
     {
         $this->cache->items['page'] = ['status' => 200, 'headers' => [], 'body' => 'legacy array entry'];
 
-        self::assertNull($this->store()->fetch(new CacheTicket('page')));
+        static::assertNull($this->store()->fetch(new CacheTicket('page')));
     }
 
-    public function testAPageWhoseHeadersCannotBeEncodedIsNotStored(): void
+    #[Test]
+    public function aPageWhoseHeadersCannotBeEncodedIsNotStored(): void
     {
-        self::assertFalse($this->store()->save(new CacheTicket('page'), new HtmlResponse('x', 200, [
+        static::assertFalse($this->store()->save(new CacheTicket('page'), new HtmlResponse('x', 200, [
             'X-Name' => "caf\xe9",
         ])));
     }
 
-    public function testAStoredEntryRoundTripsThroughTheCodec(): void
+    #[Test]
+    public function aStoredEntryRoundTripsThroughTheCodec(): void
     {
         $this->store()->save(new CacheTicket('page'), new HtmlResponse('x'));
 
-        self::assertInstanceOf(StoredResponse::class, PageCodec::decode($this->cache->items['page']));
+        static::assertInstanceOf(StoredResponse::class, PageCodec::decode($this->cache->items['page']));
     }
 
-    public function testAStoredPageIsFetchedWithItsStatusAndBody(): void
+    #[Test]
+    public function aStoredPageIsFetchedWithItsStatusAndBody(): void
     {
         $store = $this->store();
         $store->save(new CacheTicket('page'), new HtmlResponse('<p>Work</p>', 203));
 
         $hit = $store->fetch(new CacheTicket('page'));
 
-        self::assertSame([203, '<p>Work</p>'], [$hit?->getStatusCode(), (string) $hit?->getBody()]);
+        static::assertSame([203, '<p>Work</p>'], [$hit?->getStatusCode(), (string) $hit?->getBody()]);
     }
 
-    public function testFetchingAPageThatWasNeverStoredIsAMiss(): void
+    #[Test]
+    public function fetchingAPageThatWasNeverStoredIsAMiss(): void
     {
-        self::assertNull($this->store()->fetch(new CacheTicket('page')));
+        static::assertNull($this->store()->fetch(new CacheTicket('page')));
     }
 
-    public function testNoTtlIsPassedSoACacheThatRefusesPerItemTtlsStillStores(): void
+    #[Test]
+    public function noTtlIsPassedSoACacheThatRefusesPerItemTtlsStillStores(): void
     {
         $stored = (new PageStore($this->cache, $this->clock, ttl: 600))->save(
             new CacheTicket('page', ttl: 60),
             new HtmlResponse('x'),
         );
 
-        self::assertSame([true, true, null], [
+        static::assertSame([true, true, null], [
             $stored,
             array_key_exists('page', $this->cache->ttls),
             $this->cache->ttls['page'],
         ]);
     }
 
+    #[Test]
     #[DataProvider('cacheableProvider')]
-    public function testOnlyCacheableResponsesAreStored(ResponseInterface $response, bool $expected): void
+    public function onlyCacheableResponsesAreStored(ResponseInterface $response, bool $expected): void
     {
-        self::assertSame($expected, $this->store()->save(new CacheTicket('page'), $response));
+        static::assertSame($expected, $this->store()->save(new CacheTicket('page'), $response));
     }
 
+    #[Test]
     #[DataProvider('perItemTtlProvider')]
-    public function testPerItemTtlsArePassedOnlyWhenSwitchedOn(?int $optionTtl, int $expected): void
+    public function perItemTtlsArePassedOnlyWhenSwitchedOn(?int $optionTtl, int $expected): void
     {
         $cache = new InMemoryCache(honoursTtl: true);
 
@@ -206,33 +230,36 @@ final class PageStoreTest extends TestCase
             new HtmlResponse('x'),
         );
 
-        self::assertSame($expected, $cache->ttls['page']);
+        static::assertSame($expected, $cache->ttls['page']);
     }
 
-    public function testPerItemTtlsDefaultToFiveMinutes(): void
+    #[Test]
+    public function perItemTtlsDefaultToFiveMinutes(): void
     {
         $cache = new InMemoryCache(honoursTtl: true);
 
         (new PageStore($cache, $this->clock, perItemTtl: true))->save(new CacheTicket('page'), new HtmlResponse('x'));
 
-        self::assertSame(300, $cache->ttls['page']);
+        static::assertSame(300, $cache->ttls['page']);
     }
 
-    public function testThePageIsStampedWithTheTimeItWasStored(): void
+    #[Test]
+    public function thePageIsStampedWithTheTimeItWasStored(): void
     {
         $this->store()->save(new CacheTicket('page'), new HtmlResponse('x'));
 
-        self::assertSame(
+        static::assertSame(
             $this->clock->now()->getTimestamp(),
             PageCodec::decode($this->cache->items['page'])?->storedAt,
         );
     }
 
-    public function testTheVetoAndStatusHeadersAreNotStored(): void
+    #[Test]
+    public function theVetoAndStatusHeadersAreNotStored(): void
     {
         $this->store()->save(new CacheTicket('page'), new HtmlResponse('x', 200, ['X-PK-Cache' => 'MISS']));
 
-        self::assertArrayNotHasKey('X-PK-Cache', PageCodec::decode($this->cache->items['page'])->headers ?? []);
+        static::assertArrayNotHasKey('X-PK-Cache', PageCodec::decode($this->cache->items['page'])->headers ?? []);
     }
 
     protected function setUp(): void

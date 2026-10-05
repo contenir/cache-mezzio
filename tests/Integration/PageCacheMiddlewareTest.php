@@ -17,6 +17,7 @@ use Laminas\Cache\Storage\Adapter\Filesystem;
 use Laminas\Cache\Storage\Plugin\Serializer;
 use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -43,7 +44,8 @@ final class PageCacheMiddlewareTest extends TestCase
 
     private string $adminFile;
 
-    public function testAnAdminFileHoldingOnlyOtherOverridesKeepsTheSiteSwitchOn(): void
+    #[Test]
+    public function anAdminFileHoldingOnlyOtherOverridesKeepsTheSiteSwitchOn(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = $this->middleware(['options' => ['cache' => true]]);
@@ -52,10 +54,11 @@ final class PageCacheMiddlewareTest extends TestCase
         $middleware->process($this->request(cookies: ['theme' => 'dark']), $handler);
         $middleware->process($this->request(cookies: ['theme' => 'dark']), $handler);
 
-        self::assertSame(1, $handler->calls);
+        static::assertSame(1, $handler->calls);
     }
 
-    public function testAnAdminRouteOverrideTakesAPathOutOfTheCache(): void
+    #[Test]
+    public function anAdminRouteOverrideTakesAPathOutOfTheCache(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = $this->middleware(['options' => ['cache' => true]]);
@@ -64,10 +67,11 @@ final class PageCacheMiddlewareTest extends TestCase
         $middleware->process($this->request(), $handler);
         $middleware->process($this->request(), $handler);
 
-        self::assertSame(2, $handler->calls);
+        static::assertSame(2, $handler->calls);
     }
 
-    public function testEmptyingTheCacheDirectoryAsTheAdminClearCacheButtonDoesPurgesPages(): void
+    #[Test]
+    public function emptyingTheCacheDirectoryAsTheAdminClearCacheButtonDoesPurgesPages(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = $this->middleware(['options' => ['cache' => true]]);
@@ -76,10 +80,11 @@ final class PageCacheMiddlewareTest extends TestCase
         $this->deleteFilesUnder("{$this->temporaryDirectory}/data/cache");
         $middleware->process($this->request(), $handler);
 
-        self::assertSame(2, $handler->calls);
+        static::assertSame(2, $handler->calls);
     }
 
-    public function testFlushingTheStorageAsTheAdminPurgeOperationDoesPurgesPages(): void
+    #[Test]
+    public function flushingTheStorageAsTheAdminPurgeOperationDoesPurgesPages(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = $this->middleware(['options' => ['cache' => true]]);
@@ -88,10 +93,11 @@ final class PageCacheMiddlewareTest extends TestCase
         (new Filesystem(['cache_dir' => $this->cacheDir]))->flush();
         $middleware->process($this->request(), $handler);
 
-        self::assertSame(2, $handler->calls);
+        static::assertSame(2, $handler->calls);
     }
 
-    public function testNothingIsCachedUntilTheAdminSwitchesCachingOn(): void
+    #[Test]
+    public function nothingIsCachedUntilTheAdminSwitchesCachingOn(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = $this->middleware();
@@ -99,10 +105,11 @@ final class PageCacheMiddlewareTest extends TestCase
         $middleware->process($this->request(), $handler);
         $middleware->process($this->request(), $handler);
 
-        self::assertSame(2, $handler->calls);
+        static::assertSame(2, $handler->calls);
     }
 
-    public function testPagesAreCachedOnceTheAdminSwitchesCachingOn(): void
+    #[Test]
+    public function pagesAreCachedOnceTheAdminSwitchesCachingOn(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = $this->middleware();
@@ -111,7 +118,7 @@ final class PageCacheMiddlewareTest extends TestCase
         $miss = $middleware->process($this->request(), $handler);
         $hit  = $middleware->process($this->request(), $handler);
 
-        self::assertSame(
+        static::assertSame(
             [1, 'MISS', 'HIT', '<p>Work</p>'],
             [
                 $handler->calls,
@@ -122,7 +129,8 @@ final class PageCacheMiddlewareTest extends TestCase
         );
     }
 
-    public function testTheAdminSwitchingCachingOffTakesEffectOnTheNextRequest(): void
+    #[Test]
+    public function theAdminSwitchingCachingOffTakesEffectOnTheNextRequest(): void
     {
         $handler    = new CountingHandler(new HtmlResponse('<p>Work</p>'));
         $middleware = $this->middleware();
@@ -132,7 +140,7 @@ final class PageCacheMiddlewareTest extends TestCase
         (new FileRepository($this->adminFile))->save(CacheControl::disabled());
         $middleware->process($this->request(), $handler);
 
-        self::assertSame(2, $handler->calls);
+        static::assertSame(2, $handler->calls);
     }
 
     protected function setUp(): void

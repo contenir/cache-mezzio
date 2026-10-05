@@ -12,6 +12,7 @@ use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
 use Contenir\Cache\Repository\InMemoryRepository;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -41,17 +42,19 @@ final class CachePolicyFactoryTest extends TestCase
         ];
     }
 
-    public function testARegisteredRepositoryIsAuthoritative(): void
+    #[Test]
+    public function aRegisteredRepositoryIsAuthoritative(): void
     {
         $policy = (new CachePolicyFactory())(new InMemoryContainer([
             'config'                               => ['pagecache' => ['options' => ['cache' => true]]],
             CacheControlRepositoryInterface::class => new InMemoryRepository(CacheControl::disabled()),
         ]));
 
-        self::assertNull($policy->ticketFor($this->request()));
+        static::assertNull($policy->ticketFor($this->request()));
     }
 
-    public function testRefusesABypassThatIsNotCallable(): void
+    #[Test]
+    public function refusesABypassThatIsNotCallable(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('config[pagecache][bypass] must be a callable');
@@ -65,8 +68,9 @@ final class CachePolicyFactoryTest extends TestCase
     /**
      * @param array<string, mixed> $services
      */
+    #[Test]
     #[DataProvider('bypassProvider')]
-    public function testTheBypassCanBeACallableOrTheServiceNameOfOne(mixed $bypass, array $services): void
+    public function theBypassCanBeACallableOrTheServiceNameOfOne(mixed $bypass, array $services): void
     {
         $policy = (new CachePolicyFactory())(new InMemoryContainer([
             ...$services,
@@ -74,7 +78,7 @@ final class CachePolicyFactoryTest extends TestCase
             CacheControlRepositoryInterface::class => new InMemoryRepository(CacheControl::enabled()),
         ]));
 
-        self::assertSame(
+        static::assertSame(
             [true, false],
             [
                 null !== $policy->ticketFor($this->request()),
@@ -83,7 +87,8 @@ final class CachePolicyFactoryTest extends TestCase
         );
     }
 
-    public function testUsesTheConfiguredSessionCookieName(): void
+    #[Test]
+    public function usesTheConfiguredSessionCookieName(): void
     {
         $policy = (new CachePolicyFactory())(new InMemoryContainer([
             'config'                               => ['pagecache' => ['session_cookie' => 'SID']],
@@ -92,6 +97,6 @@ final class CachePolicyFactoryTest extends TestCase
             ),
         ]));
 
-        self::assertNull($policy->ticketFor($this->request(cookies: ['SID' => 'abc'])));
+        static::assertNull($policy->ticketFor($this->request(cookies: ['SID' => 'abc'])));
     }
 }

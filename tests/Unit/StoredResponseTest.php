@@ -7,17 +7,19 @@ namespace Contenir\Cache\Mezzio\Tests\Unit;
 use Contenir\Cache\Mezzio\StoredResponse;
 use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Group('unit')]
 #[Group('codec')]
 final class StoredResponseTest extends TestCase
 {
-    public function testCapturesStatusHeadersAndBodyOfAResponse(): void
+    #[Test]
+    public function capturesStatusHeadersAndBodyOfAResponse(): void
     {
         $page = StoredResponse::fromResponse(new HtmlResponse('<p>Work</p>', 203, ['X-Thing' => 'a']), 42);
 
-        self::assertEquals(
+        static::assertEquals(
             new StoredResponse(
                 203,
                 ['X-Thing' => ['a'], 'content-type' => ['text/html; charset=utf-8']],
@@ -28,21 +30,23 @@ final class StoredResponseTest extends TestCase
         );
     }
 
-    public function testLeavesExcludedHeadersOutWhateverTheirCase(): void
+    #[Test]
+    public function leavesExcludedHeadersOutWhateverTheirCase(): void
     {
         $response = new HtmlResponse('x', 200, ['X-Page-Cache' => 'off', 'X-Kept' => 'yes']);
 
-        self::assertArrayNotHasKey(
+        static::assertArrayNotHasKey(
             'X-Page-Cache',
             StoredResponse::fromResponse($response, 1, ['x-page-cache'])->headers,
         );
     }
 
-    public function testRebuildsAnEquivalentResponse(): void
+    #[Test]
+    public function rebuildsAnEquivalentResponse(): void
     {
         $response = (new StoredResponse(301, ['Location' => ['/new']], 'moved', 1))->toResponse();
 
-        self::assertSame(
+        static::assertSame(
             [301, '/new', 'moved'],
             [$response->getStatusCode(), $response->getHeaderLine('Location'), (string) $response->getBody()],
         );
