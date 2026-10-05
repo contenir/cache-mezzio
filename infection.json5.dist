@@ -13,17 +13,7 @@
         }
     },
     "mutators": {
-        "@default": true,
-        "ArrayItemRemoval": {
-            "ignoreSourceCodeByRegex": [
-                // ActiveOptions::resolve(): every option reader falls back (`?? false` / `?? null`)
-                // to the value DEFAULTS holds, so dropping DEFAULTS cannot change any result.
-                "\\$options = \\[\\.\\.\\.self::DEFAULTS, .*",
-                // PageStore::save(): isCacheable() refuses any response carrying the veto header,
-                // so it is never present to strip when a page is stored.
-                "PageCacheMiddleware::VETO_HEADER,"
-            ]
-        }
+        "@default": true
     },
     "staticAnalysisTool": "mago"
 }

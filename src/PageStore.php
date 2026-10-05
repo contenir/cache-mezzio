@@ -93,10 +93,7 @@ final readonly class PageStore
         $stored = StoredResponse::fromResponse(
             $response,
             $this->clock->now()->getTimestamp(),
-            [
-                PageCacheMiddleware::VETO_HEADER,
-                PageCacheMiddleware::STATUS_HEADER,
-            ],
+            [PageCacheMiddleware::STATUS_HEADER],
         );
 
         try {

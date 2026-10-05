@@ -14,5 +14,5 @@ jobs:
       enable-codecov: true
       coverage-php-version: "8.4"
       enable-infection: true
-      min-msi: "95"
-      min-covered-msi: "95"
+      min-msi: "100"
+      min-covered-msi: "100"

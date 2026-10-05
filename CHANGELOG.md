@@ -8,7 +8,14 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- Infection mutation testing in CI, MSI 99%.
+- Infection mutation testing in CI, MSI 100%.
+
+### Removed
+
+- Dead code: `ActiveOptions::resolve()` no longer spreads `DEFAULTS` into the
+  options (every reader already falls back to the same values), and
+  `PageStore::save()` no longer strips the veto header from stored responses
+  (a vetoed response is never stored). Behaviour is unchanged.
 
 ## [2.0.0] - Unreleased
 
