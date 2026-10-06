@@ -41,7 +41,7 @@ final readonly class PageCacheMiddlewareFactory
     {
         if (! $mutator instanceof ResponseMutatorInterface) {
             throw new RuntimeException(sprintf(
-                'contenir/cache-mezzio: page cache mutators must implement %s; got %s.',
+                'contenir/contenir-cache-mezzio: page cache mutators must implement %s; got %s.',
                 ResponseMutatorInterface::class,
                 get_debug_type($mutator),
             ));

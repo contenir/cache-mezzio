@@ -4,7 +4,7 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## [2.1.0] - Unreleased
+## [2.1.0] - 2026-10-05
 
 ### Changed
 
@@ -26,7 +26,7 @@ adheres to [Semantic Versioning](https://semver.org/).
   `PageStore::save()` no longer strips the veto header from stored responses
   (a vetoed response is never stored). Behaviour is unchanged.
 
-## [2.0.0] - Unreleased
+## [2.0.0] - 2026-10-05
 
 The public API is unchanged. The major version aligns the package with the
 other Contenir 2.x packages: the same supported PHP versions, the shared

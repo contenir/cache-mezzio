@@ -28,12 +28,12 @@ final class PageStoreFactoryTest extends TestCase
         return [
             'no cache configured' => [
                 [],
-                'contenir/cache-mezzio: config[pagecache][cache] must be the service name of a'
+                'contenir/contenir-cache-mezzio: config[pagecache][cache] must be the service name of a'
                     . ' Psr\SimpleCache\CacheInterface or a Laminas\Cache\Storage\StorageInterface.',
             ],
             'not a cache'         => [
                 ['config' => ['pagecache' => ['cache' => 'cache.pages']], 'cache.pages' => new stdClass()],
-                'contenir/cache-mezzio: the page cache service "cache.pages" is a stdClass, not a'
+                'contenir/contenir-cache-mezzio: the page cache service "cache.pages" is a stdClass, not a'
                     . ' Psr\SimpleCache\CacheInterface or a Laminas\Cache\Storage\StorageInterface.',
             ],
         ];
