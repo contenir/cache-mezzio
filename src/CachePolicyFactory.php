@@ -62,7 +62,7 @@ final readonly class CachePolicyFactory
     {
         if (! is_callable($callable)) {
             throw new RuntimeException(
-                'contenir/cache-mezzio: config[pagecache][bypass] must be a callable or the service name of one.',
+                'contenir/contenir-cache-mezzio: config[pagecache][bypass] must be a callable or the service name of one.',
             );
         }
 
