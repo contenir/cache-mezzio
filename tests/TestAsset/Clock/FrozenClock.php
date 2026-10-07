@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\TestAsset\Clock;
+namespace Contenir\PageCache\Mezzio\Tests\TestAsset\Clock;
 
 use DateTimeImmutable;
 use Override;

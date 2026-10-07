@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio;
+namespace Contenir\PageCache\Mezzio;
 
 /**
  * How the page cache dealt with a request, handed to every response mutator.

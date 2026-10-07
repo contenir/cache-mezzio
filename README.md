@@ -1,11 +1,12 @@
-# contenir/contenir-cache-mezzio
+# contenir/contenir-page-cache-mezzio
 
-Formerly `contenir/cache-mezzio`; the old package is abandoned in favour of this one.
+Formerly `contenir/contenir-cache-mezzio`, and before that `contenir/cache-mezzio`.
+See [UPGRADE-page-cache.md](UPGRADE-page-cache.md) to move from either.
 
 [![Continuous Integration](https://github.com/contenir/contenir-cache-mezzio/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/contenir/contenir-cache-mezzio/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/contenir/contenir-cache-mezzio/graph/badge.svg)](https://codecov.io/gh/contenir/contenir-cache-mezzio)
 
-Mezzio (PSR-15) adapter for [`contenir/contenir-cache`](https://github.com/contenir/contenir-cache).
+Mezzio (PSR-15) adapter for [`contenir/contenir-page-cache`](https://github.com/contenir/contenir-cache).
 
 A full-page output cache middleware, controlled by the Contenir admin's
 Page Cache screen. It is the sibling of
@@ -17,7 +18,7 @@ framework.
 ## Requirements
 
 - PHP 8.3, 8.4 or 8.5
-- `contenir/contenir-cache` 2.1+, `contenir/contenir-config` 2.1+
+- `contenir/contenir-page-cache` 2.1+, `contenir/contenir-config` 2.1+
 - `laminas/laminas-diactoros` 3.x, PSR-7, PSR-11, PSR-15, PSR-16 and PSR-20
 - Optional: `laminas/laminas-cache` 3.x or 4.x, for the storage the admin's
   purge buttons understand (see [Storage and purging](docs/storage.md))
@@ -28,16 +29,16 @@ The 0.x releases remain available from the `0.x` branch and `v0.*` tags; see
 ## Install
 
 ```bash
-composer require contenir/contenir-cache-mezzio
+composer require contenir/contenir-page-cache-mezzio
 ```
 
-`laminas/laminas-component-installer` adds `Contenir\Cache\Mezzio\ConfigProvider`
+`laminas/laminas-component-installer` adds `Contenir\PageCache\Mezzio\ConfigProvider`
 to `config/config.php`. Without it, add the provider yourself:
 
 ```php
 $aggregator = new ConfigAggregator([
     // …
-    \Contenir\Cache\Mezzio\ConfigProvider::class,
+    \Contenir\PageCache\Mezzio\ConfigProvider::class,
     // …
 ]);
 ```
@@ -91,7 +92,7 @@ $app->pipe(ErrorHandler::class);
 $app->pipe(ServerUrlMiddleware::class);
 $app->pipe(MaintenanceMiddleware::class);   // a 503 must never be cached, or served from cache
 $app->pipe(SessionMiddleware::class);       // if the site has one: authenticated visitors then bypass
-$app->pipe(\Contenir\Cache\Mezzio\PageCacheMiddleware::class);
+$app->pipe(\Contenir\PageCache\Mezzio\PageCacheMiddleware::class);
 $app->pipe(RouteMiddleware::class);
 // … ImplicitHeadMiddleware, DispatchMiddleware, NotFoundHandler
 ```

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Unit;
+namespace Contenir\PageCache\Mezzio\Tests\Unit;
 
-use Contenir\Cache\CacheControl;
-use Contenir\Cache\Mezzio\CachePolicy;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Session\FakeSession;
-use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
-use Contenir\Cache\Repository\InMemoryRepository;
+use Contenir\PageCache\CacheControl;
+use Contenir\PageCache\Mezzio\CachePolicy;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Session\FakeSession;
+use Contenir\PageCache\Mezzio\Tests\Trait\ServerRequestTrait;
+use Contenir\PageCache\Repository\InMemoryRepository;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

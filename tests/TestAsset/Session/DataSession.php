@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\TestAsset\Session;
+namespace Contenir\PageCache\Mezzio\Tests\TestAsset\Session;
 
 /**
  * A session object exposing only toArray().

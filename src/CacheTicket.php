@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio;
+namespace Contenir\PageCache\Mezzio;
 
 /**
  * The cache entry one request reads and writes: its key, and the `ttl` option

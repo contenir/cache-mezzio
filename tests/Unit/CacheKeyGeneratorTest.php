@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Unit;
+namespace Contenir\PageCache\Mezzio\Tests\Unit;
 
-use Contenir\Cache\CacheControl;
-use Contenir\Cache\Mezzio\ActiveOptions;
-use Contenir\Cache\Mezzio\CacheKeyGenerator;
-use Contenir\Cache\Mezzio\SessionInspector;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Http\LooseUploadsRequest;
-use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
+use Contenir\PageCache\CacheControl;
+use Contenir\PageCache\Mezzio\ActiveOptions;
+use Contenir\PageCache\Mezzio\CacheKeyGenerator;
+use Contenir\PageCache\Mezzio\SessionInspector;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Http\LooseUploadsRequest;
+use Contenir\PageCache\Mezzio\Tests\Trait\ServerRequestTrait;
 use Laminas\Diactoros\UploadedFile;
 use Laminas\Diactoros\Uri;
 use PHPUnit\Framework\Attributes\DataProvider;

@@ -4,6 +4,21 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Renamed from `contenir/contenir-cache-mezzio` to
+  `contenir/contenir-page-cache-mezzio`, and the namespace from
+  `Contenir\Cache\Mezzio\` to `Contenir\PageCache\Mezzio\`, following the
+  core package's rename to `contenir/contenir-page-cache`. No `class_alias`
+  shims are shipped. See [UPGRADE-page-cache.md](UPGRADE-page-cache.md).
+- Requires `contenir/contenir-page-cache` `^2.1` instead of
+  `contenir/contenir-cache`.
+- Declares `conflict` (any version) with `contenir/cache-mezzio` and
+  `contenir/contenir-cache-mezzio` instead of replacing them, because the
+  namespace change means it cannot stand in for either.
+
 ## [2.1.0] - 2026-10-05
 
 ### Changed

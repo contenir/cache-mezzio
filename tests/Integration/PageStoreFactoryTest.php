@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Integration;
+namespace Contenir\PageCache\Mezzio\Tests\Integration;
 
-use Contenir\Cache\Mezzio\CacheTicket;
-use Contenir\Cache\Mezzio\PageStoreFactory;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
-use Contenir\Cache\Mezzio\Tests\Trait\TemporaryDirectoryTrait;
+use Contenir\PageCache\Mezzio\CacheTicket;
+use Contenir\PageCache\Mezzio\PageStoreFactory;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
+use Contenir\PageCache\Mezzio\Tests\Trait\TemporaryDirectoryTrait;
 use Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator;
 use Laminas\Cache\Storage\Adapter\Filesystem;
 use Laminas\Cache\Storage\Plugin\Serializer;

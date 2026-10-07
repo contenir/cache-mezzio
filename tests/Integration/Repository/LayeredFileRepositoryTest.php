@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Integration\Repository;
+namespace Contenir\PageCache\Mezzio\Tests\Integration\Repository;
 
-use Contenir\Cache\CacheControl;
-use Contenir\Cache\Mezzio\Repository\LayeredFileRepository;
-use Contenir\Cache\Mezzio\Tests\Trait\TemporaryDirectoryTrait;
+use Contenir\PageCache\CacheControl;
+use Contenir\PageCache\Mezzio\Repository\LayeredFileRepository;
+use Contenir\PageCache\Mezzio\Tests\Trait\TemporaryDirectoryTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\TestAsset\Http;
+namespace Contenir\PageCache\Mezzio\Tests\TestAsset\Http;
 
 use Laminas\Diactoros\ServerRequest;
 use Override;

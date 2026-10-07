@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\TestAsset\Cache;
+namespace Contenir\PageCache\Mezzio\Tests\TestAsset\Cache;
 
 use Override;
 use Psr\SimpleCache\CacheInterface;

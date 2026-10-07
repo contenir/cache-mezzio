@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Unit;
+namespace Contenir\PageCache\Mezzio\Tests\Unit;
 
-use Contenir\Cache\Mezzio\PageCodec;
-use Contenir\Cache\Mezzio\StoredResponse;
+use Contenir\PageCache\Mezzio\PageCodec;
+use Contenir\PageCache\Mezzio\StoredResponse;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio;
+namespace Contenir\PageCache\Mezzio;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;

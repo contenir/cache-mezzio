@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Repository;
+namespace Contenir\PageCache\Mezzio\Repository;
 
-use Contenir\Cache\CacheControl;
-use Contenir\Cache\CacheControlRepositoryInterface;
-use Contenir\Cache\Repository\FileRepository;
 use Contenir\Config\Reader\PhpArray;
+use Contenir\PageCache\CacheControl;
+use Contenir\PageCache\CacheControlRepositoryInterface;
+use Contenir\PageCache\Repository\FileRepository;
 use Override;
 
 use function array_filter;
@@ -25,7 +25,7 @@ use const FILTER_VALIDATE_BOOLEAN;
  *
  * The Contenir admin writes only the settings the operator has overridden to
  * pagecache.local.php, and an override is keyed by presence: a setting absent
- * from the file inherits the site default. contenir/contenir-cache's FileRepository
+ * from the file inherits the site default. contenir/contenir-page-cache's FileRepository
  * cannot express that (a missing `cache` key reads as "disabled"), so a site
  * whose admin has only overridden, say, the cookie options would lose its page
  * cache altogether. This repository resolves the effective state the way the

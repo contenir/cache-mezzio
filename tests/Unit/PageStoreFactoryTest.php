@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Unit;
+namespace Contenir\PageCache\Mezzio\Tests\Unit;
 
-use Contenir\Cache\Mezzio\CacheTicket;
-use Contenir\Cache\Mezzio\PageStoreFactory;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Cache\InMemoryCache;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
+use Contenir\PageCache\Mezzio\CacheTicket;
+use Contenir\PageCache\Mezzio\PageStoreFactory;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Cache\InMemoryCache;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
 use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -28,12 +28,12 @@ final class PageStoreFactoryTest extends TestCase
         return [
             'no cache configured' => [
                 [],
-                'contenir/contenir-cache-mezzio: config[pagecache][cache] must be the service name of a'
+                'contenir/contenir-page-cache-mezzio: config[pagecache][cache] must be the service name of a'
                     . ' Psr\SimpleCache\CacheInterface or a Laminas\Cache\Storage\StorageInterface.',
             ],
             'not a cache'         => [
                 ['config' => ['pagecache' => ['cache' => 'cache.pages']], 'cache.pages' => new stdClass()],
-                'contenir/contenir-cache-mezzio: the page cache service "cache.pages" is a stdClass, not a'
+                'contenir/contenir-page-cache-mezzio: the page cache service "cache.pages" is a stdClass, not a'
                     . ' Psr\SimpleCache\CacheInterface or a Laminas\Cache\Storage\StorageInterface.',
             ],
         ];

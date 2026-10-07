@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio;
+namespace Contenir\PageCache\Mezzio;
 
 use Closure;
-use Contenir\Cache\CacheControlRepositoryInterface;
+use Contenir\PageCache\CacheControlRepositoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 use function in_array;

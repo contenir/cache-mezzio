@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio;
+namespace Contenir\PageCache\Mezzio;
 
 use Closure;
-use Contenir\Cache\CacheControlRepositoryInterface;
-use Contenir\Cache\Mezzio\Repository\LayeredFileRepository;
+use Contenir\PageCache\CacheControlRepositoryInterface;
+use Contenir\PageCache\Mezzio\Repository\LayeredFileRepository;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -62,7 +62,7 @@ final readonly class CachePolicyFactory
     {
         if (! is_callable($callable)) {
             throw new RuntimeException(
-                'contenir/contenir-cache-mezzio: config[pagecache][bypass] must be a callable or the service name of one.',
+                'contenir/contenir-page-cache-mezzio: config[pagecache][bypass] must be a callable or the service name of one.',
             );
         }
 
