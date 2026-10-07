@@ -22,11 +22,11 @@
         "psr/simple-cache": "^1.0 || ^2.0 || ^3.0"
     },
     "require-dev": {
+        "contenir/contenir-qa-tools": "0.1.x-dev",
         "infection/infection": "^0.34.1",
         "laminas/laminas-cache": "^3.14.1",
         "laminas/laminas-cache-storage-adapter-filesystem": "^2.4",
         "laminas/laminas-serializer": "^2.17",
-        "php-db/phpdb-qa-tools": "0.1.x-dev",
         "phpunit/phpunit": "^11.5.42"
     },
     "suggest": {
