@@ -6,7 +6,7 @@ See [UPGRADE-page-cache.md](UPGRADE-page-cache.md) to move from either.
 [![Continuous Integration](https://github.com/contenir/contenir-cache-mezzio/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/contenir/contenir-cache-mezzio/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/contenir/contenir-cache-mezzio/graph/badge.svg)](https://codecov.io/gh/contenir/contenir-cache-mezzio)
 
-Mezzio (PSR-15) adapter for [`contenir/contenir-page-cache`](https://github.com/contenir/contenir-cache).
+Mezzio (PSR-15) adapter for [`contenir/contenir-page-cache`](https://github.com/contenir/contenir-page-cache).
 
 A full-page output cache middleware, controlled by the Contenir admin's
 Page Cache screen. It is the sibling of
