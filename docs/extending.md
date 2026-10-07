@@ -8,7 +8,7 @@ A handler or middleware can stop one response from being stored, the PSR-15
 counterpart of the MVC adapter's `pagecache.disable` event:
 
 ```php
-use Contenir\Cache\Mezzio\PageCacheMiddleware;
+use Contenir\PageCache\Mezzio\PageCacheMiddleware;
 
 return PageCacheMiddleware::veto($response);           // adds X-Page-Cache: off
 return $response->withHeader('Cache-Control', 'no-store');
@@ -24,8 +24,8 @@ per-request values never end up in the cache. It runs on hits, misses and
 bypassed responses alike, so a placeholder never leaks when caching is off:
 
 ```php
-use Contenir\Cache\Mezzio\CacheResult;
-use Contenir\Cache\Mezzio\ResponseMutatorInterface;
+use Contenir\PageCache\Mezzio\CacheResult;
+use Contenir\PageCache\Mezzio\ResponseMutatorInterface;
 use Laminas\Diactoros\StreamFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Unit;
+namespace Contenir\PageCache\Mezzio\Tests\Unit;
 
-use Contenir\Cache\Mezzio\StoredResponse;
+use Contenir\PageCache\Mezzio\StoredResponse;
 use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

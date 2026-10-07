@@ -1,6 +1,6 @@
 {
-    "name": "contenir/contenir-cache-mezzio",
-    "description": "Mezzio (PSR-15) adapter for contenir/contenir-cache: a full-page output cache middleware controlled by the Contenir admin.",
+    "name": "contenir/contenir-page-cache-mezzio",
+    "description": "Mezzio (PSR-15) adapter for contenir/contenir-page-cache: a full-page output cache middleware controlled by the Contenir admin.",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -12,7 +12,7 @@
     ],
     "require": {
         "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
-        "contenir/contenir-cache": "^2.1",
+        "contenir/contenir-page-cache": "^2.0",
         "contenir/contenir-config": "^2.1",
         "laminas/laminas-diactoros": "^3.0",
         "psr/clock": "^1.0",
@@ -32,17 +32,18 @@
     "suggest": {
         "laminas/laminas-cache": "To back the page cache with a laminas-cache storage adapter (the setup the Contenir admin's purge button understands)."
     },
-    "replace": {
-        "contenir/cache-mezzio": "self.version"
+    "conflict": {
+        "contenir/cache-mezzio": "*",
+        "contenir/contenir-cache-mezzio": "*"
     },
     "autoload": {
         "psr-4": {
-            "Contenir\\Cache\\Mezzio\\": "src/"
+            "Contenir\\PageCache\\Mezzio\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Contenir\\Cache\\Mezzio\\Tests\\": "tests/"
+            "Contenir\\PageCache\\Mezzio\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -78,10 +79,10 @@
     },
     "extra": {
         "laminas": {
-            "config-provider": "Contenir\\Cache\\Mezzio\\ConfigProvider"
+            "config-provider": "Contenir\\PageCache\\Mezzio\\ConfigProvider"
         },
         "branch-alias": {
-            "dev-main": "2.1.x-dev"
+            "dev-main": "2.0.x-dev"
         }
     },
     "minimum-stability": "dev",

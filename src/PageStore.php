@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio;
+namespace Contenir\PageCache\Mezzio;
 
 use JsonException;
 use Psr\Clock\ClockInterface;

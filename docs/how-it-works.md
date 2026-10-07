@@ -38,8 +38,8 @@ save), and the admin's switch takes effect on the next request.
 
 The file holds only what the operator has overridden: a key that is absent
 inherits the site default from `pagecache.options` / `pagecache.routes`.
-`Repository\LayeredFileRepository` resolves the two layers the way the admin
-screen displays them:
+contenir-page-cache's `Repository\LayeredFileRepository` resolves the two
+layers the way the admin screen displays them:
 
 - `pagecache.options.cache` present in the file: it is the master switch;
   absent: the site default applies.
@@ -54,7 +54,7 @@ was built. Taking an override *away* in the admin (so a key reverts to the
 site default) therefore needs the config cache cleared; setting or changing
 an override does not.
 
-A site can register its own `Contenir\Cache\CacheControlRepositoryInterface`
+A site can register its own `Contenir\PageCache\CacheControlRepositoryInterface`
 service instead. It is then authoritative: `options`, `routes` and `file` are
 not used.
 

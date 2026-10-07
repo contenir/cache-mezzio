@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\TestAsset\Mutator;
+namespace Contenir\PageCache\Mezzio\Tests\TestAsset\Mutator;
 
-use Contenir\Cache\Mezzio\CacheResult;
-use Contenir\Cache\Mezzio\ResponseMutatorInterface;
+use Contenir\PageCache\Mezzio\CacheResult;
+use Contenir\PageCache\Mezzio\ResponseMutatorInterface;
 use Laminas\Diactoros\StreamFactory;
 use Override;
 use Psr\Http\Message\ResponseInterface;

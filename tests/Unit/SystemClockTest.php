@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Unit;
+namespace Contenir\PageCache\Mezzio\Tests\Unit;
 
-use Contenir\Cache\Mezzio\SystemClock;
+use Contenir\PageCache\Mezzio\SystemClock;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

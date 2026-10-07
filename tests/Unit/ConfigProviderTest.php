@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Unit;
+namespace Contenir\PageCache\Mezzio\Tests\Unit;
 
-use Contenir\Cache\Mezzio\ActiveOptions;
-use Contenir\Cache\Mezzio\CachePolicy;
-use Contenir\Cache\Mezzio\CachePolicyFactory;
-use Contenir\Cache\Mezzio\ConfigProvider;
-use Contenir\Cache\Mezzio\PageCacheMiddleware;
-use Contenir\Cache\Mezzio\PageCacheMiddlewareFactory;
-use Contenir\Cache\Mezzio\PageStore;
-use Contenir\Cache\Mezzio\PageStoreFactory;
+use Contenir\PageCache\Mezzio\ActiveOptions;
+use Contenir\PageCache\Mezzio\CachePolicy;
+use Contenir\PageCache\Mezzio\CachePolicyFactory;
+use Contenir\PageCache\Mezzio\ConfigProvider;
+use Contenir\PageCache\Mezzio\PageCacheMiddleware;
+use Contenir\PageCache\Mezzio\PageCacheMiddlewareFactory;
+use Contenir\PageCache\Mezzio\PageStore;
+use Contenir\PageCache\Mezzio\PageStoreFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

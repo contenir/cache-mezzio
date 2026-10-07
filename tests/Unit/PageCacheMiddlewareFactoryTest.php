@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Unit;
+namespace Contenir\PageCache\Mezzio\Tests\Unit;
 
-use Contenir\Cache\CacheControl;
-use Contenir\Cache\CacheControlRepositoryInterface;
-use Contenir\Cache\Mezzio\PageCacheMiddlewareFactory;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Cache\InMemoryCache;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Handler\CountingHandler;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Mutator\AppendingMutator;
-use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
-use Contenir\Cache\Repository\InMemoryRepository;
+use Contenir\PageCache\CacheControl;
+use Contenir\PageCache\CacheControlRepositoryInterface;
+use Contenir\PageCache\Mezzio\PageCacheMiddlewareFactory;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Cache\InMemoryCache;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Handler\CountingHandler;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Mutator\AppendingMutator;
+use Contenir\PageCache\Mezzio\Tests\Trait\ServerRequestTrait;
+use Contenir\PageCache\Repository\InMemoryRepository;
 use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

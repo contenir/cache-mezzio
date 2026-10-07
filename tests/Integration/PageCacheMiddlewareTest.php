@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Integration;
+namespace Contenir\PageCache\Mezzio\Tests\Integration;
 
-use Contenir\Cache\CacheControl;
-use Contenir\Cache\Mezzio\PageCacheMiddleware;
-use Contenir\Cache\Mezzio\PageCacheMiddlewareFactory;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Handler\CountingHandler;
-use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
-use Contenir\Cache\Mezzio\Tests\Trait\TemporaryDirectoryTrait;
-use Contenir\Cache\Repository\FileRepository;
+use Contenir\PageCache\CacheControl;
+use Contenir\PageCache\Mezzio\PageCacheMiddleware;
+use Contenir\PageCache\Mezzio\PageCacheMiddlewareFactory;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Handler\CountingHandler;
+use Contenir\PageCache\Mezzio\Tests\Trait\ServerRequestTrait;
+use Contenir\PageCache\Mezzio\Tests\Trait\TemporaryDirectoryTrait;
+use Contenir\PageCache\Repository\FileRepository;
 use FilesystemIterator;
 use Laminas\Cache\Storage\Adapter\Filesystem;
 use Laminas\Cache\Storage\Plugin\Serializer;

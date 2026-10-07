@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio;
+namespace Contenir\PageCache\Mezzio;
 
 use Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator;
 use Laminas\Cache\Storage\StorageInterface;
@@ -55,7 +55,7 @@ final readonly class PageStoreFactory
         }
 
         throw new RuntimeException(sprintf(
-            'contenir/contenir-cache-mezzio: the page cache service "%s" is a %s, not a'
+            'contenir/contenir-page-cache-mezzio: the page cache service "%s" is a %s, not a'
                 . ' Psr\SimpleCache\CacheInterface or a Laminas\Cache\Storage\StorageInterface.',
             $serviceName,
             get_debug_type($service),
@@ -72,7 +72,7 @@ final readonly class PageStoreFactory
         $serviceName = $config->cacheService();
         if (null === $serviceName) {
             throw new RuntimeException(
-                'contenir/contenir-cache-mezzio: config[pagecache][cache] must be the service name of a'
+                'contenir/contenir-page-cache-mezzio: config[pagecache][cache] must be the service name of a'
                     . ' Psr\SimpleCache\CacheInterface or a Laminas\Cache\Storage\StorageInterface.',
             );
         }

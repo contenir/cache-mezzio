@@ -4,56 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7c6b6bb5abda215a22963f0280371cab",
+    "content-hash": "ebe0ec8024ab718f4c6e74d38fe74a3f",
     "packages": [
-        {
-            "name": "contenir/contenir-cache",
-            "version": "v2.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/contenir/contenir-cache.git",
-                "reference": "e02bf505a4d6ea07d58eb356071830e90513ebba"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-cache/zipball/e02bf505a4d6ea07d58eb356071830e90513ebba",
-                "reference": "e02bf505a4d6ea07d58eb356071830e90513ebba",
-                "shasum": ""
-            },
-            "require": {
-                "contenir/contenir-config": "^2.1",
-                "php": "~8.3.0 || ~8.4.0 || ~8.5.0"
-            },
-            "replace": {
-                "contenir/cache": "self.version"
-            },
-            "require-dev": {
-                "infection/infection": "^0.34.1",
-                "php-db/phpdb-qa-tools": "0.1.x-dev",
-                "phpunit/phpunit": "^11.5.42"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "2.1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Contenir\\Cache\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Framework-agnostic page-cache control for Contenir CMS — admin writes a purge signal, Sites read it and flush.",
-            "support": {
-                "issues": "https://github.com/contenir/contenir-cache/issues",
-                "source": "https://github.com/contenir/contenir-cache/tree/v2.1.0"
-            },
-            "time": "2026-10-05T20:09:29+00:00"
-        },
         {
             "name": "contenir/contenir-config",
             "version": "v2.1.0",
@@ -101,6 +53,55 @@
                 "source": "https://github.com/contenir/contenir-config/tree/v2.1.0"
             },
             "time": "2026-10-05T13:35:11+00:00"
+        },
+        {
+            "name": "contenir/contenir-page-cache",
+            "version": "v2.0.0-RC1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/contenir/contenir-page-cache.git",
+                "reference": "d200d69731378b8512d1bb0762f1d362a0280fd7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/contenir/contenir-page-cache/zipball/d200d69731378b8512d1bb0762f1d362a0280fd7",
+                "reference": "d200d69731378b8512d1bb0762f1d362a0280fd7",
+                "shasum": ""
+            },
+            "require": {
+                "contenir/contenir-config": "^2.1",
+                "php": "~8.3.0 || ~8.4.0 || ~8.5.0"
+            },
+            "conflict": {
+                "contenir/cache": "*",
+                "contenir/contenir-cache": "*"
+            },
+            "require-dev": {
+                "contenir/contenir-qa-tools": "0.1.x-dev",
+                "infection/infection": "^0.34.1",
+                "phpunit/phpunit": "^11.5.42"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Contenir\\PageCache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Framework-agnostic page-cache control for Contenir CMS — admin writes a purge signal, Sites read it and flush.",
+            "support": {
+                "issues": "https://github.com/contenir/contenir-page-cache/issues",
+                "source": "https://github.com/contenir/contenir-page-cache/tree/v2.0.0-RC1"
+            },
+            "time": "2026-10-07T05:14:23+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",

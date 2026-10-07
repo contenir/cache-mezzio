@@ -4,39 +4,34 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## [2.1.0] - 2026-10-05
+## [2.0.0-RC1] - Unreleased
+
+The first 2.0 pre-release, published as
+`contenir/contenir-page-cache-mezzio`. The API keeps its shape apart from the
+namespace, which moves from `Contenir\Cache\Mezzio\` to
+`Contenir\PageCache\Mezzio\`. The major version also aligns the package with
+the other Contenir 2.x packages: the same supported PHP versions, the shared
+QA toolchain and CI. See [UPGRADE-2.0.md](UPGRADE-2.0.md) and
+[UPGRADE-page-cache.md](UPGRADE-page-cache.md).
+
+The 2.0.0 and 2.1.0 tags published on 2026-10-05 as
+`contenir/contenir-cache-mezzio` were withdrawn and are folded into this
+release.
 
 ### Changed
 
-- Renamed from `contenir/cache-mezzio` to `contenir/contenir-cache-mezzio`. The package
-  declares `replace` for the old name; require `contenir/contenir-cache-mezzio`
-  instead. See [UPGRADE-2.0.md](UPGRADE-2.0.md).
-- Requires the renamed `contenir/contenir-cache` and
-  `contenir/contenir-config` at `^2.1` (were `contenir/cache` and
+- Renamed from `contenir/cache-mezzio` (and the short-lived
+  `contenir/contenir-cache-mezzio`) to `contenir/contenir-page-cache-mezzio`,
+  and the namespace from `Contenir\Cache\Mezzio\` to
+  `Contenir\PageCache\Mezzio\`, following the core package's rename to
+  `contenir/contenir-page-cache`. No `class_alias` shims are shipped.
+- Declares `conflict` (any version) with `contenir/cache-mezzio` and
+  `contenir/contenir-cache-mezzio` instead of replacing them, because the
+  namespace change means it cannot stand in for either.
+- Requires `contenir/contenir-page-cache` `^2.0` and
+  `contenir/contenir-config` `^2.1` (were `contenir/cache` and
   `contenir/config`).
-
-### Added
-
-- Infection mutation testing in CI, MSI 100%.
-
-### Removed
-
-- Dead code: `ActiveOptions::resolve()` no longer spreads `DEFAULTS` into the
-  options (every reader already falls back to the same values), and
-  `PageStore::save()` no longer strips the veto header from stored responses
-  (a vetoed response is never stored). Behaviour is unchanged.
-
-## [2.0.0] - 2026-10-05
-
-The public API is unchanged. The major version aligns the package with the
-other Contenir 2.x packages: the same supported PHP versions, the shared
-php-db QA toolchain and CI. See [UPGRADE-2.0.md](UPGRADE-2.0.md).
-
-### Changed
-
 - Requires PHP 8.3, 8.4 or 8.5 (`~8.3.0 || ~8.4.0 || ~8.5.0`; was `^8.3`).
-- `contenir/config` is required at `^0.2 || ^2.0` (was `^0.1`, which excluded
-  the current 0.2 release). `contenir/cache` accepts `^0.1 || ^2.0`.
 - `LICENSE` names Contenir as the copyright holder, in line with the other
   Contenir packages.
 - The local path and VCS repository entries are gone from `composer.json`;
@@ -51,13 +46,21 @@ php-db QA toolchain and CI. See [UPGRADE-2.0.md](UPGRADE-2.0.md).
 
 ### Added
 
-- Continuous integration through `php-db/phpdb-qa-tools` on PHP 8.3, 8.4 and
-  8.5 against lowest, locked and latest dependencies, with coverage reported
-  to Codecov. `composer.lock` is committed.
+- Continuous integration through contenir-qa-tools on PHP 8.3, 8.4 and 8.5
+  against lowest, locked and latest dependencies, with coverage reported to
+  Codecov and Infection mutation testing at MSI 100%. `composer.lock` is
+  committed.
 - 100% line and branch coverage across the unit and integration suites.
 
 ### Removed
 
+- `Repository\LayeredFileRepository`. It moved to contenir-page-cache as
+  `Contenir\PageCache\Repository\LayeredFileRepository`, unchanged, so the
+  Laminas MVC adapter can share it. `CachePolicyFactory` uses it from there.
+- Dead code: `ActiveOptions::resolve()` no longer spreads `DEFAULTS` into the
+  options (every reader already falls back to the same values), and
+  `PageStore::save()` no longer strips the veto header from stored responses
+  (a vetoed response is never stored). Behaviour is unchanged.
 - The package's own `quality.yml` workflow, replaced by the shared one.
 
 ## [0.1.0] - 2026-10-05

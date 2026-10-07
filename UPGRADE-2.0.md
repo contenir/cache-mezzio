@@ -1,22 +1,27 @@
 # Upgrading from 0.x to 2.0
 
-2.0 has the same public API as 0.1. The platform and dependency constraints
-change, and one configuration value is now read the way it was documented.
+2.0 keeps the 0.1 API, but the package is renamed to
+`contenir/contenir-page-cache-mezzio` and the namespace moves from
+`Contenir\Cache\Mezzio\` to `Contenir\PageCache\Mezzio\`. The platform and
+dependency constraints change, and one configuration value is now read the
+way it was documented.
 
 | | 0.x | 2.0 |
 | --- | --- | --- |
 | PHP | ^8.3 | 8.3, 8.4 or 8.5 |
-| `contenir/cache` | ^0.1 | ^0.1 or ^2.0 |
-| `contenir/config` | ^0.1 | ^0.2 or ^2.0 |
+| `contenir/cache` | ^0.1 | `contenir/contenir-page-cache` ^2.0 |
+| `contenir/config` | ^0.1 | `contenir/contenir-config` ^2.1 |
 
 To upgrade, update the constraint:
 
 ```bash
-composer require contenir/cache-mezzio:^2.0
+composer remove contenir/cache-mezzio contenir/cache \
+  && composer require contenir/contenir-page-cache-mezzio:^2.0@RC
 ```
 
-No code changes are needed. Every public class, interface, enum and constant
-keeps its signature.
+Every public class, interface, enum and constant keeps its signature under
+the new namespace. Update imports and the config provider as described in
+[UPGRADE-page-cache.md](UPGRADE-page-cache.md).
 
 ## Final classes
 
@@ -53,15 +58,10 @@ same way.
 Projects that cannot move yet can stay on `^0.1`, which is maintained on the
 `0.x` branch.
 
-## Package renamed in 2.1
+## Package renamed
 
-From 2.1, the package is published as `contenir/contenir-cache-mezzio`. It declares
-`replace` for `contenir/cache-mezzio`, so the two can never be installed together.
-Its dependencies move to their renamed packages too: `contenir/contenir-cache`
-and `contenir/contenir-config`, both `^2.1`. Switch the requirement:
-
-```bash
-composer remove contenir/cache-mezzio && composer require contenir/contenir-cache-mezzio:^2.1
-```
-
-No code changes are needed: namespaces and classes are unchanged.
+2.0 is published as `contenir/contenir-page-cache-mezzio`. It declares
+`conflict` with `contenir/cache-mezzio` and `contenir/contenir-cache-mezzio`,
+so old and new can never be installed together. See
+[UPGRADE-page-cache.md](UPGRADE-page-cache.md) for the Composer, config and
+import changes.

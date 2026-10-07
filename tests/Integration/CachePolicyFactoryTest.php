@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Integration;
+namespace Contenir\PageCache\Mezzio\Tests\Integration;
 
-use Contenir\Cache\Mezzio\CachePolicy;
-use Contenir\Cache\Mezzio\CachePolicyFactory;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
-use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
-use Contenir\Cache\Mezzio\Tests\Trait\TemporaryDirectoryTrait;
+use Contenir\PageCache\Mezzio\CachePolicy;
+use Contenir\PageCache\Mezzio\CachePolicyFactory;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Container\InMemoryContainer;
+use Contenir\PageCache\Mezzio\Tests\Trait\ServerRequestTrait;
+use Contenir\PageCache\Mezzio\Tests\Trait\TemporaryDirectoryTrait;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

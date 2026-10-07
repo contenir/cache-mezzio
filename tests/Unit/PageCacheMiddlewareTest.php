@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Contenir\Cache\Mezzio\Tests\Unit;
+namespace Contenir\PageCache\Mezzio\Tests\Unit;
 
-use Contenir\Cache\CacheControl;
-use Contenir\Cache\Mezzio\CachePolicy;
-use Contenir\Cache\Mezzio\PageCacheMiddleware;
-use Contenir\Cache\Mezzio\PageStore;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Cache\InMemoryCache;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Clock\FrozenClock;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Handler\CountingHandler;
-use Contenir\Cache\Mezzio\Tests\TestAsset\Mutator\AppendingMutator;
-use Contenir\Cache\Mezzio\Tests\Trait\ServerRequestTrait;
-use Contenir\Cache\Repository\InMemoryRepository;
+use Contenir\PageCache\CacheControl;
+use Contenir\PageCache\Mezzio\CachePolicy;
+use Contenir\PageCache\Mezzio\PageCacheMiddleware;
+use Contenir\PageCache\Mezzio\PageStore;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Cache\InMemoryCache;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Clock\FrozenClock;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Handler\CountingHandler;
+use Contenir\PageCache\Mezzio\Tests\TestAsset\Mutator\AppendingMutator;
+use Contenir\PageCache\Mezzio\Tests\Trait\ServerRequestTrait;
+use Contenir\PageCache\Repository\InMemoryRepository;
 use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -205,7 +205,7 @@ final class PageCacheMiddlewareTest extends TestCase
     }
 
     /**
-     * @param list<\Contenir\Cache\Mezzio\ResponseMutatorInterface> $mutators
+     * @param list<\Contenir\PageCache\Mezzio\ResponseMutatorInterface> $mutators
      */
     private function middleware(array $mutators = []): PageCacheMiddleware
     {
