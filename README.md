@@ -18,7 +18,7 @@ framework.
 ## Requirements
 
 - PHP 8.3, 8.4 or 8.5
-- `contenir/contenir-page-cache` 2.1+, `contenir/contenir-config` 2.1+
+- `contenir/contenir-page-cache` 2.0+, `contenir/contenir-config` 2.1+
 - `laminas/laminas-diactoros` 3.x, PSR-7, PSR-11, PSR-15, PSR-16 and PSR-20
 - Optional: `laminas/laminas-cache` 3.x or 4.x, for the storage the admin's
   purge buttons understand (see [Storage and purging](docs/storage.md))

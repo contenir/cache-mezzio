@@ -13,7 +13,7 @@ adheres to [Semantic Versioning](https://semver.org/).
   `Contenir\Cache\Mezzio\` to `Contenir\PageCache\Mezzio\`, following the
   core package's rename to `contenir/contenir-page-cache`. No `class_alias`
   shims are shipped. See [UPGRADE-page-cache.md](UPGRADE-page-cache.md).
-- Requires `contenir/contenir-page-cache` `^2.1` instead of
+- Requires `contenir/contenir-page-cache` `^2.0` instead of
   `contenir/contenir-cache`.
 - Declares `conflict` (any version) with `contenir/cache-mezzio` and
   `contenir/contenir-cache-mezzio` instead of replacing them, because the
