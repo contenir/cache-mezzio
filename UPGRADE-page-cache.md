@@ -16,7 +16,7 @@ install old and new together, so sites switch deliberately, and move to
 
 ```bash
 composer remove contenir/contenir-cache-mezzio contenir/contenir-cache \
-  && composer require contenir/contenir-page-cache-mezzio
+  && composer require contenir/contenir-page-cache-mezzio:^2.0@RC
 ```
 
 If you still require `contenir/cache-mezzio` or `contenir/cache`, remove

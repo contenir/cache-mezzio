@@ -29,7 +29,7 @@ The 0.x releases remain available from the `0.x` branch and `v0.*` tags; see
 ## Install
 
 ```bash
-composer require contenir/contenir-page-cache-mezzio
+composer require contenir/contenir-page-cache-mezzio:^2.0@RC
 ```
 
 `laminas/laminas-component-installer` adds `Contenir\PageCache\Mezzio\ConfigProvider`
