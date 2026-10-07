@@ -6,7 +6,7 @@ namespace Contenir\PageCache\Mezzio;
 
 use Closure;
 use Contenir\PageCache\CacheControlRepositoryInterface;
-use Contenir\PageCache\Mezzio\Repository\LayeredFileRepository;
+use Contenir\PageCache\Repository\LayeredFileRepository;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;

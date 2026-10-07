@@ -128,7 +128,7 @@ $app->pipe(RouteMiddleware::class);
 | `CacheResult` | `Hit`, `Miss` or `Bypass`, handed to every mutator. |
 | `ResponseMutatorInterface` | The extension point for per-request changes after storage. |
 | `SystemClock` | The PSR-20 wall clock `PageStore` uses by default. |
-| `Repository\LayeredFileRepository` | The admin's file laid over the site's defaults (a `CacheControlRepositoryInterface`). |
+| `Contenir\PageCache\Repository\LayeredFileRepository` | From contenir-page-cache: the admin's file laid over the site's defaults (a `CacheControlRepositoryInterface`). |
 | `PageCacheMiddlewareFactory`, `CachePolicyFactory`, `PageStoreFactory` | Build the services above from `config['pagecache']`; invalid configuration throws `RuntimeException`. `CachePolicyFactory::DEFAULT_FILE` is the admin file's path relative to the working directory. |
 
 `ActiveOptions`, `CacheKeyGenerator`, `PageCacheConfig`, `PageCodec`,

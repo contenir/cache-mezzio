@@ -19,6 +19,12 @@ adheres to [Semantic Versioning](https://semver.org/).
   `contenir/contenir-cache-mezzio` instead of replacing them, because the
   namespace change means it cannot stand in for either.
 
+### Removed
+
+- `Repository\LayeredFileRepository`. It moved to contenir-page-cache as
+  `Contenir\PageCache\Repository\LayeredFileRepository`, unchanged, so the
+  Laminas MVC adapter can share it. `CachePolicyFactory` uses it from there.
+
 ## [2.1.0] - 2026-10-05
 
 ### Changed

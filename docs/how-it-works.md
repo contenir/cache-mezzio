@@ -38,8 +38,8 @@ save), and the admin's switch takes effect on the next request.
 
 The file holds only what the operator has overridden: a key that is absent
 inherits the site default from `pagecache.options` / `pagecache.routes`.
-`Repository\LayeredFileRepository` resolves the two layers the way the admin
-screen displays them:
+contenir-page-cache's `Repository\LayeredFileRepository` resolves the two
+layers the way the admin screen displays them:
 
 - `pagecache.options.cache` present in the file: it is the master switch;
   absent: the site default applies.
